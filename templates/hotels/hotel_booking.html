@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>PS-booking - отели</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+    <!--Custom CSS-->
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<!-- header starts -->
+<header class="headerstye-1">
+    <div class="container">
+        <div class="d-md-flex align-items-center justify-content-between py-2">
+            <a href="../index.html">
+                <img src="images/logo.png" class="mb-2" alt="image">
+            </a>
+            <div class="ms-3">
+                <a href="../dashboard.html" class="text-white me-2"><i class="bi bi-person-circle me-1"></i>Мой аккаунт</a>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- header ends -->
+
+<!-- BreadCrumb Starts -->
+<section class="breadcrumb-main pb-0 mb-5" style="background-image: url(images/bg/bg8.jpg);">
+    <div class="breadcrumb-outer pt-10">
+        <div class="container">
+            <div class="breadcrumb-content d-md-flex align-items-center pt-10">
+                <h2 class="mb-0">Бронирование отеля</h2>
+            </div>
+        </div>
+    </div>
+    <div class="dot-overlay"></div>
+</section>
+<!-- BreadCrumb Ends -->
+
+<!-- hotel detail starts -->
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <div class="col mb-4">
+            <!-- description -->
+            <div class="description">
+                <div class="border-b mb-2 pb-2">
+                    <p class="my-3">
+                        <span class="bg-pink p-3 text-white">Недавно отремонтирован</span>
+                    </p>
+                    <h4 class="font-weight-bold mb-0 me-2 d-inline-block">
+                        Radisson Collection Hotel
+                    </h4>
+                    <div class="rating d-inline-block">
+                        <span class="bi bi-star-fill"></span>
+                        <span class="bi bi-star-fill"></span>
+                        <span class="bi bi-star-fill"></span>
+                        <span class="bi bi-star-fill"></span>
+                    </div>
+                    <p class="mb-0">
+                        <i class="bi bi-geo-alt me-2"></i>Лондон, Англия
+                    </p>
+                </div>
+
+                <img src="images/rooms/list1.jpg" alt="image">
+
+                <div class="my-4">
+                    <h4>Описание</h4>
+                    <p>Отель расположен в 9 км. от международного аэропорта Лондона.
+                        Все номера отеля оснащены телевизором с плоским экраном.
+                        Собственная ванная комната с душем укомплектована феном и бесплатными туалетно-косметическими
+                        принадлежностями.
+                    </p>
+                    <p>В отеле ежедневно сервируется завтрак <span class="text-primary">"шведский стол"</span>.
+                        Осуществляется доставка еды и напитков в номер.
+                        На всей территории предоставляется бесплатный Wi-Fi.
+                        Гости могут почитать газеты и воспользоваться банкоматом.
+                    </p>
+                    <p>Парам особенно нравится расположение — они оценили проживание в этом районе для поездки вдвоем на
+                        <strong>8,8</strong>.</p>
+                </div>
+
+                <div class="my-4">
+                    <h4>Сервис</h4>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th>1</th>
+                            <td>Парковка</td>
+                        </tr>
+                        <tr>
+                            <th>2</th>
+                            <td>Бесплатный Wi-Fi</td>
+                        </tr>
+                        <tr>
+                            <th>3</th>
+                            <td>Бассейн</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="my-4 card shadow-sm">
+                    <div class="card-body">
+                        <h4>Наличие мест</h4>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <h5>Дата заезда</h5>
+                                <h6 class="text-primary">01 января 2020</h6>
+                                <!--                                <h6 class="text-secondary">&#45;&#45;</h6>-->
+                            </div>
+                            <div class="col-md-3">
+                                <h5>Дата отъезда</h5>
+                                <h6 class="text-primary">11 января 2020</h6>
+                                <!--                                <h6 class="text-secondary">&#45;&#45;</h6>-->
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <h5>Доступность</h5>
+                                <!-- available -->
+                                <h6 class="text-success"><i class="bi bi-calendar-check me-2"></i>Есть места</h6>
+                                <!-- not available -->
+                                <!--                                 <h6 class="text-secondary"><i class="bi bi-calendar-x me-2"></i>Мест нет</h6>-->
+                                <!-- lack of information-->
+                                <!--                                <h6 class="text-secondary">Выберите даты</h6>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="my-4">
+                    <h4>Выбор номера</h4>
+                    <div class="card mb-3">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-md-4">
+                                <img src="images/rooms/room1.jpg" class="img-fluid rounded-start" alt="room">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h4 class="card-title">Комфорт</h4>
+                                            <p class="card-text">Просторный номер с 1 кроватью размера King-size</p>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <p class="mb-1">3000.00 / ночь</p>
+                                            <a href="../booking_list.html" class="nir-btn w-100">Я бронирую</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-md-4">
+                                <img src="images/rooms/room2.jpg" class="img-fluid rounded-start" alt="room">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h4 class="card-title">Полулюкс</h4>
+                                            <p class="card-text">Номер полулюкс с 2 отдельными кроватями</p>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <p class="mb-1 text-danger">На выбранные даты мест нет</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-md-4">
+                                <img src="images/rooms/room3.jpg" class="img-fluid rounded-start" alt="room">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h4 class="card-title">Люкс</h4>
+                                            <p class="card-text">Номер повышенной комфортности класса "Люкс"</p>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <p class="mb-1">5000.00 / ночь</p>
+                                            <a href="../index.html" class="btn btn-outline-secondary">
+                                                Указать даты поездки
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="my-4">
+                    <h4>Рейтинг отеля</h4>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4">
+                            <div class="bg-pink text-center p-4">
+                                <h2 class="text-white"><span>4.5</span>/5</h2>
+                                <p class="text-white">Всего 2 отзыва</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="single-comments single-box my-4">
+                    <h4>Отзывы</h4>
+                    <div class="row">
+                        <div class="col">
+                            <div class="comment-box">
+                                <div class="comment-image">
+                                    <img src="images/reviewer/1.jpg" alt="image">
+                                </div>
+                                <div class="comment-content w-100">
+                                    <h5 class="mb-1">Алекс</h5>
+                                    <p class="comment-date">1 апреля 2020</p>
+                                    <div class="comment-rate">
+                                        <div class="rating mar-right-15">
+                                            <span class="bi bi-star-fill"></span>
+                                            <span class="bi bi-star-fill"></span>
+                                            <span class="bi bi-star-fill"></span>
+                                            <span class="bi bi-star-fill"></span>
+                                            <span class="bi bi-star-fill"></span>
+                                        </div>
+                                    </div>
+                                    <p class="comment">Лучший отель в котором я когда-либо был.</p>
+                                </div>
+                            </div>
+                            <div class="comment-box">
+                                <div class="comment-image">
+                                    <img src="images/reviewer/2.jpg" alt="image">
+                                </div>
+                                <div class="comment-content w-100">
+                                    <h5 class="mb-1">Илья</h5>
+                                    <p class="comment-date">12 апреля 2020</p>
+                                    <div class="comment-rate">
+                                        <div class="rating mar-right-15">
+                                            <span class="bi bi-star-fill"></span>
+                                            <span class="bi bi-star-fill"></span>
+                                            <span class="bi bi-star-fill"></span>
+                                        </div>
+                                    </div>
+                                    <p class="comment">Не все понравилось, поэтому 3 звезды</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="my-4">
+                    <h4>Оставить отзыв</h4>
+                    <div class="my-4 card border-0 shadow">
+                        <div class="card-body">
+                            <form action=".." method="post">
+                                <label for="id_rate">Оценка:</label>
+                                <input type="number" name="rate" class="form-control" required="" id="id_rate">
+                                <label for="id_text">Текст отзыва:</label>
+                                <textarea name="text" cols="40" rows="3" maxlength="500" class="form-control"
+                                          id="id_text"></textarea>
+                                <button type="submit" class="btn btn-primary mt-3">Отправить отзыв</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- hotel detail Ends -->
+
+<!-- footer starts -->
+<footer class="mt-5 py-5 bg-navy">
+    <div class="container">
+        <p class="m-0 text-white">PS-Booking by Pumpskill. All rights reserved.</p>
+    </div>
+</footer>
+<!-- footer ends -->
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

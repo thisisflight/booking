@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}PS-Booking: Путешествуй с удовольствием!{% endblock %}</title>
+    {% include 'inc/_styles.html' %}
+</head>
+<body>
+
+{% include 'inc/_header.html' %}
+
+{% if main %}
+    {% include 'inc/_main_banner.html' %}
+    {% block main_content %}{% endblock %}
+{% endif %}
+
+{% include 'inc/_footer.html' %}
+{% include 'inc/_scripts.html' %}
+
+</body>
+</html>

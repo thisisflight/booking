@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block main_content %}
+    <!-- form main starts -->
+    <div class="form-main">
+        <div class="container">
+            <form action="hotels/hotels_list.html" method="get">
+                <div class="form-content w-100">
+                    <h3 class="form-title text-center d-inline white">Найти отель</h3>
+                    <div class="d-lg-flex align-items-end justify-content-between">
+                        <div class="form-group pr-4 m-0">
+                            <label for="check_in">Заезд:</label>
+                            <input type="date" class="form-control" id="check_in">
+                        </div>
+                        <div class="form-group pr-4 m-0">
+                            <label for="check_out">Отъезд:</label>
+                            <input type="date" class="form-control" id="check_out">
+                        </div>
+                        <div class="form-group pr-4 m-0">
+                            <label for="person">Человек:</label>
+                            <select id="person">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="form-group m-0">
+                            <button type="submit" class="nir-btn w-100"><i class="bi bi-search"></i> Поиск</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div style="height: 150px"></div>
+    </div>
+    <!-- form main ends -->
+
+    <!-- top destination starts -->
+    <section class="container my-5 py-5">
+        <div class="section-title section-title-w text-center mb-5 pb-2 w-50 mx-auto">
+            <h4 class="mb-0">Направления</h4>
+            <h2 class="m-0">Открой <span>лучшую страну</span></h2>
+        </div>
+        <div class="row d-flex align-items-center">
+            {% for country in countries %}
+                <div class="col-lg-4 col-md-6 p-1">
+                    <div class="main-img">
+                        <img src="{{ country.photo.url }}" alt="destination">
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between bg-white py-2 px-3">
+                        <h4 class="mb-0 navy">{{ country.name }}</h4>
+                        <h4 class="mb-0 pink">от {{ country.min_price  }} ₽</h4>
+                    </div>
+                    <a href="#" class="nir-btn">
+                        <span class="white">Бронировать</span>
+                        <i class="bi bi-caret-right-fill text-white"></i>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+    <!-- top destination ends -->
+
+    <!-- top hotels starts -->
+    <section class="top-destination overflow-hidden bg-navy">
+        <div class="container">
+            <div class="section-title section-title-w text-center mb-5 pb-2 w-50 mx-auto">
+                <h4 class="mb-0 text-white">Отели</h4>
+                <h2 class="m-0 text-white">Выбери <span>лучший отель</span></h2>
+            </div>
+            <div class="row d-flex align-items-center">
+                {% for hotel in hotels %}
+                    <div class="col-lg-4 col-md-6 p-1">
+                        <div class="desti-image">
+                            <div class="main-img">
+                                <img src="{{ hotel.photo.url }}" alt="hotel">
+                            </div>
+                            <div class="desti-content hotel-content d-flex align-items-center justify-content-between bg-white py-2 px-3">
+                                <div>
+                                    <div class="pb-2">
+                                        <span class="bg-navy text-white p-2 me-2">4.3</span>1 отзыв
+                                    </div>
+                                    <h4 class="mb-0 navy">{{ hotel.name }}</h4>
+                                    <span><i class="bi bi-geo-alt me-2"></i>{{ hotel.city.name }}</span>
+                                </div>
+                                <div>
+                                    <h4 class="mb-0 pink">{{ hotel.min_price }}</h4>
+                                    <span>за ночь</span>
+                                </div>
+                            </div>
+                            <div class="desti-overlay">
+                                <a href="hotels/hotel_booking.html" class="nir-btn">
+                                    <span class="text-white">Бронировать</span>
+                                    <i class="bi bi-arrow-right text-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+    <!-- top hotels ends -->
+
+    <!-- testimonial starts -->
+    <section class="testimonial pb-6 pt-9" style="background-image: url(images/testimonial.png)">
+        <div class="container">
+            <div class="text-center mb-5 pb-2 w-50 mx-auto">
+                <h4 class="mb-0">Отзывы</h4>
+                <h2 class="m-0">Что <span class="pink">о нас говорят</span></h2>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="testimonial-item1">
+                        <div class="author-info mb-2">
+                            <img src="images/testimonial/img1.jpg" alt="user">
+                            <h4 class="my-1 pink">Алекс Иванов</h4>
+                            <p class="my-0">21 июля 2020</p>
+                        </div>
+                        <div class="details d-flex justify-content-between">
+                            <p class="m-0">Этим летом летал на Кубу - это был, наверное, самый лучший отель, в котором
+                                я когда либо бывал. Плюс получил большой кэшбек. Вобщем все огонь!</p>
+                        </div>
+                        <i class="bi bi-chat-left-quote-fill"></i>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="testimonial-item1">
+                        <div class="author-info mb-2">
+                            <img src="images/testimonial/img2.jpg" alt="user">
+                            <h4 class="my-1 pink">Федор Макаров</h4>
+                            <p class="my-0">22 июля 2020</p>
+                        </div>
+                        <div class="details d-flex justify-content-between">
+                            <p class="m-0">Барселона меня поразила своей архитектурой. Шикарность отелей в Испании выше
+                                всяких похвал. Мы были в трешке, но нам показалось, что отдыхали мы в пятизвездочном
+                                отеле.</p>
+                        </div>
+                        <i class="bi bi-chat-left-quote-fill"></i>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="testimonial-item1">
+                        <div class="author-info mb-2">
+                            <img src="images/testimonial/img3.jpg" alt="user">
+                            <h4 class="my-1 pink">Женя Кац</h4>
+                            <p class="my-0">23 июля 2020</p>
+                        </div>
+                        <div class="details d-flex justify-content-between">
+                            <p class="m-0">Австралия, пляж, океан и серфинг - что еще нужно для прекрасного отдыха? Нужен
+                                прекрасный отель и он у нас был! Всем остался доволен, всем рекомендую.</p>
+                        </div>
+                        <i class="bi bi-chat-left-quote-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- testimonial ends -->
+{% endblock %}

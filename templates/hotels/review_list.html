@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>PS-booking - отзывы</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+    <!--Custom CSS-->
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+
+    <!--Dashboard CSS-->
+    <link href="css/dashboard.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+<!-- header starts -->
+<header class="headerstye-1">
+    <div class="container">
+        <div class="d-md-flex align-items-center justify-content-between py-2">
+            <a href="../index.html">
+                <img src="images/logo.png" class="mb-2" alt="image">
+            </a>
+            <div class="ms-3">
+                <a href="../dashboard.html" class="text-white me-2"><i class="bi bi-person-circle me-1"></i>Мой аккаунт</a>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- header ends -->
+
+<!-- BreadCrumb Starts -->
+<section class="breadcrumb-main pb-2" style="background-image: url(images/bg/bg8.jpg);">
+    <div class="dot-overlay"></div>
+</section>
+<!-- BreadCrumb Ends -->
+
+<!-- Dashboard starts -->
+<div class="container my-5 py-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="author-news mb-3">
+                <div class="author-news-content text-center py-3 bg-secondary">
+                    <div class="author-thumb my-1">
+                        <img src="images/reviewer/1.jpg" alt="author">
+                    </div>
+                    <h3 class="mb-1 white"><a href="#" class="white">Боб Рыбкин</a></h3>
+                    <p class="text-white"><i class="bi bi-phone"></i>+7 (123) 456-78-89</p>
+                </div>
+            </div>
+            <!-- Responsive Navigation Trigger -->
+            <a href="#" class="dashboard-responsive-nav-trigger">
+                <i class="bi bi-justify"></i> Меню
+            </a>
+            <div class="dashboard-nav mb-3">
+                <ul>
+                    <li>
+                        <a href="../dashboard.html">
+                            <i class="bi bi-box"></i>Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../profile.html">
+                            <i class="bi bi-person-square"></i>Профайл
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../booking_list.html">
+                            <i class="bi bi-bag-check"></i>Бронирования
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="review_list.html">
+                            <i class="bi bi-chat-quote"></i>Отзывы
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-9">
+
+            <div class="row mb-4">
+                <div class="col-lg-12 col-md-12 col-xs-12">
+                    <div class="shadow-sm rounded">
+                        <div class="dashboard-title">
+                            <h4 class="mb-0">Отзывы</h4>
+                        </div>
+                        <div class="table-responsive table-desi">
+                            <table class="basic-table table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Тур</th>
+                                    <th>Оценка</th>
+                                    <th>Отзыв</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Radisson Collection Hotel, 5*<br>
+                                        <i class="bi bi-geo-alt me-1"></i>Лондон, Англия<br>
+                                        <i class="bi bi-calendar4-event me-1"></i>01.01.2001 - 15.01.2001
+                                    </td>
+                                    <th>5</th>
+                                    <th>Мне все очень понравилось...</th>
+                                </tr>
+                                <tr>
+                                    <td>Sol Palmeras Starfish, 4*<br>
+                                        <i class="bi bi-geo-alt me-1"></i>Варадеро, Куба<br>
+                                        <i class="bi bi-calendar4-event me-1"></i>01.07.2001 - 14.01.2001
+                                    </td>
+                                    <th>3</th>
+                                    <th>Мне не очень понравилось...</th>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Dashboard ends -->
+
+<!-- footer starts -->
+<footer class="mt-5 py-5 bg-navy">
+    <div class="container">
+        <p class="m-0 text-white">PS-Booking by Pumpskill. All rights reserved.</p>
+    </div>
+</footer>
+<!-- footer ends -->
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+<!-- Scripts only for account's pages-->
+<script src="js/dashboard-custom.js"></script>
+
+</body>
+</html>

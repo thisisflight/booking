@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>PS-booking - dashboard</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+    <!--Custom CSS-->
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+
+    <!--Dashboard CSS-->
+    <link href="css/dashboard.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+<!-- header starts -->
+<header class="headerstye-1">
+    <div class="container">
+        <div class="d-md-flex align-items-center justify-content-between py-2">
+            <a href="index.html">
+                <img src="images/logo.png" class="mb-2" alt="image">
+            </a>
+            <div class="ms-3">
+                <a href="dashboard.html" class="text-white me-2">
+                    <i class="bi bi-person-circle me-1"></i>Мой аккаунт
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- header ends -->
+
+<!-- BreadCrumb Starts -->
+<section class="breadcrumb-main pb-2" style="background-image: url(images/bg/bg8.jpg);">
+    <div class="dot-overlay"></div>
+</section>
+<!-- BreadCrumb Ends -->
+
+<!-- Dashboard starts -->
+<div class="container my-5 py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                Сообщение пользователю
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="author-news mb-3">
+                <div class="author-news-content text-center py-3 bg-secondary">
+                    <div class="author-thumb my-1">
+                        <img src="images/reviewer/1.jpg" alt="author">
+                    </div>
+                    <h3 class="mb-1 white"><a href="#" class="white">Боб Рыбкин</a></h3>
+                    <p class="text-white"><i class="bi bi-phone"></i>+7 (123) 456-78-89</p>
+                </div>
+            </div>
+            <!-- Responsive Navigation Trigger -->
+            <a href="#" class="dashboard-responsive-nav-trigger">
+                <i class="bi bi-justify"></i> Меню
+            </a>
+            <div class="dashboard-nav mb-3">
+                <ul>
+                    <li class="active">
+                        <a href="dashboard.html">
+                            <i class="bi bi-box"></i>Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="profile.html">
+                            <i class="bi bi-person-square"></i>Профайл
+                        </a>
+                    </li>
+                    <li>
+                        <a href="booking_list.html">
+                            <i class="bi bi-bag-check"></i>Бронирования
+                        </a>
+                    </li>
+                    <li>
+                        <a href="hotels/review_list.html">
+                            <i class="bi bi-chat-quote"></i>Отзывы
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <div class="dashboard-stat mb-4">
+                        <div class="dashboard-stat-content"><h4>6</h4> <span>Пользователей</span></div>
+                        <div class="dashboard-stat-icon"><i class="bi bi-person"></i></div>
+                        <div class="dashboard-stat-item"><p>Пользователей зарегистрировано на сайте</p></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="dashboard-stat mb-4">
+                        <div class="dashboard-stat-content"><h4>12</h4> <span>Бронирований</span></div>
+                        <div class="dashboard-stat-icon"><i class="bi bi-bar-chart-line"></i></div>
+                        <div class="dashboard-stat-item"><p>Количество забронированных номеров</p></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="dashboard-stat mb-4">
+                        <div class="dashboard-stat-content"><h4>95</h4> <span>Отзывов</span></div>
+                        <div class="dashboard-stat-icon"><i class="bi bi-chat-quote"></i></div>
+                        <div class="dashboard-stat-item"><p>Оставлено отзывов</p></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="shadow-sm rounded">
+                        <div class="dashboard-title">
+                            <h4 class="mb-0">Отели</h4>
+                        </div>
+                        <div class="table-responsive table-desi">
+                            <table class="basic-table table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Страна</th>
+                                    <th>Город</th>
+                                    <th>Отель</th>
+                                    <th>Бронирований</th>
+                                    <th>Отзывов</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Англия</td>
+                                    <td>Лондон</td>
+                                    <td><a href="hotels/hotel_update.html">Radisson Collection Hotel</a></td>
+                                    <td>12</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>Куба</td>
+                                    <td>Варадеро</td>
+                                    <td><a href="hotels/hotel_update.html">Sol Palmeras Starfish</a></td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>Мексика</td>
+                                    <td>Канкун</td>
+                                    <td><a href="hotels/hotel_update.html">Azulik Quetzal</a></td>
+                                    <td>1</td>
+                                    <td>2</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="hotels/hotel_update.html" class="nir-btn m-3">Добавить отель</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Dashboard ends -->
+
+<!-- footer starts -->
+<footer class="mt-5 py-5 bg-navy">
+    <div class="container">
+        <p class="m-0 text-white">PS-Booking by Pumpskill. All rights reserved.</p>
+    </div>
+</footer>
+<!-- footer ends -->
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+<!-- Scripts only for account's pages-->
+<script src="js/dashboard-custom.js"></script>
+
+</body>
+</html>
