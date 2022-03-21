@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from .forms import HotelFilterForm
 from .models import Hotel
@@ -61,3 +61,25 @@ class HotelListView(ListView):
             if filter_capacity:
                 queryset = queryset.filter(rooms__capacity__gte=filter_capacity)
         return queryset.order_by('-pk')
+
+
+class HotelDetailView(DetailView):
+    model = Hotel
+    template_name = 'hotels/hotel_booking.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        reviews = self.object.reviews.select_related('user__profile').order_by('-pk')
+        context['title'] = "Бронирование отеля"
+        context['options'] = self.object.options.all()
+        context['rooms'] = self.object.rooms.all()
+        context['reviews'] = reviews
+        context['reviews_amount'] = len(reviews)
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.select_related('country', 'city')
+        queryset = queryset.prefetch_related('options', 'rooms', 'reviews')
+        queryset = queryset.with_cheapest_price_and_average_rate()
+        return queryset
