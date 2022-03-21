@@ -1,7 +1,25 @@
 from django.contrib import admin
+from django.db.models import Prefetch
+from django.utils.safestring import mark_safe
+
 from .models import (Country, City, Hotel, Option,
                      Room, Review, Reservation)
-from django.utils.safestring import mark_safe
+
+
+class ReservationInline(admin.StackedInline):
+    model = Reservation
+    extra = 0
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "room":
+            hotel_id = request.resolver_match.kwargs.get('object_id')
+            kwargs["queryset"] = Room.objects.select_related('hotel').filter(hotel_id=hotel_id)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.select_related('user', 'hotel', 'room')
+        return queryset
 
 
 @admin.register(Country)
@@ -30,6 +48,7 @@ class HotelAdmin(admin.ModelAdmin):
     list_display = ['name', 'show_hotel_photo', 'city',
                     'category', 'repaired_recently']
     list_select_related = ['country', 'city']
+    inlines = [ReservationInline]
 
 
 @admin.register(Option)
@@ -50,9 +69,4 @@ class RoomAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Reservation)
-class ReservationAdmin(admin.ModelAdmin):
     pass

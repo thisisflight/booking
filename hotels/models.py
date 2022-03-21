@@ -92,17 +92,6 @@ class Hotel(models.Model):
     def __str__(self):
         return f'{self.name}'
 
-    @property
-    def rate(self):
-        reviews = self.reviews.all()
-        return (round(sum(review.rate for review in reviews) / len(reviews), 1)
-                if len(reviews) else 0)
-
-    # @property
-    # def min_price(self):
-    #     rooms = self.rooms.all()
-    #     return min(room.price for room in rooms) if rooms else 0
-
     class Meta:
         db_table = 'hotels'
         verbose_name = 'Отель'
@@ -182,6 +171,11 @@ class Reservation(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
         verbose_name='Гость', related_name='reservations'
+    )
+    hotel = models.ForeignKey(
+        Hotel, on_delete=models.CASCADE,
+        verbose_name='Отель', related_name='reservations',
+        null=True
     )
     room = models.ForeignKey(
         Room, on_delete=models.CASCADE,

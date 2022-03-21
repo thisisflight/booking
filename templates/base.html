@@ -14,6 +14,8 @@
 {% if main %}
     {% include 'inc/_main_banner.html' %}
     {% block main_content %}{% endblock %}
+{% else %}
+    {% block content %}{% endblock %}
 {% endif %}
 
 {% include 'inc/_footer.html' %}

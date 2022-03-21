@@ -20,7 +20,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'hotels.apps.HotelsConfig',
+    'accounts.apps.AccountsConfig',
     'debug_toolbar',
     'django_cleanup.apps.CleanupConfig'
 ]
@@ -51,12 +53,14 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'plurals': 'templatetags.plurals'
+            }
         },
     },
 ]
 
 WSGI_APPLICATION = 'psbooking.wsgi.application'
-
 
 DATABASES = {
     'default': {
@@ -64,7 +68,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -81,14 +84,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 USE_TZ = True
-
+USE_L10N = True
+USE_THOUSAND_SEPARATOR = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [

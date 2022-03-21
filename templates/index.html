@@ -1,36 +1,31 @@
 {% extends 'base.html' %}
+{% load plurals %}
 {% load static %}
 {% block title %}{% endblock %}
 {% block main_content %}
     <!-- form main starts -->
     <div class="form-main">
         <div class="container">
-            <form action="hotels/hotels_list.html" method="get">
+            <form action="." method="get" id="form">
                 <div class="form-content w-100">
                     <h3 class="form-title text-center d-inline white">Найти отель</h3>
                     <div class="d-lg-flex align-items-end justify-content-between">
                         <div class="form-group pr-4 m-0">
                             <label for="check_in">Заезд:</label>
-                            <input type="date" class="form-control" id="check_in">
+                            {{ form.arrival_date }}
                         </div>
                         <div class="form-group pr-4 m-0">
                             <label for="check_out">Отъезд:</label>
-                            <input type="date" class="form-control" id="check_out">
+                            {{ form.departure_date }}
                         </div>
                         <div class="form-group pr-4 m-0">
                             <label for="person">Человек:</label>
-                            <select id="person">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
+                            {{ form.capacity }}
                         </div>
                         <div class="form-group m-0">
+                            <input type="hidden" name="search" value="1">
                             <button type="submit" class="nir-btn w-100"><i class="bi bi-search"></i> Поиск</button>
                         </div>
-
                     </div>
                 </div>
             </form>
@@ -53,7 +48,7 @@
                     </div>
                     <div class="d-flex align-items-center justify-content-between bg-white py-2 px-3">
                         <h4 class="mb-0 navy">{{ country.name }}</h4>
-                        <h4 class="mb-0 pink">от {{ country.min_price  }} ₽</h4>
+                        <h4 class="mb-0 pink">от {% separate_integers_with_dotes country.min_price %}</h4>
                     </div>
                     <a href="#" class="nir-btn">
                         <span class="white">Бронировать</span>
@@ -81,14 +76,18 @@
                             </div>
                             <div class="desti-content hotel-content d-flex align-items-center justify-content-between bg-white py-2 px-3">
                                 <div>
-                                    <div class="pb-2">
-                                        <span class="bg-navy text-white p-2 me-2">4.3</span>1 отзыв
-                                    </div>
+                                    {% with hotel.reviews.count as amount %}
+                                        <div class="pb-2">
+                                            <span class="bg-navy text-white p-2 me-2">
+                                                {% separate_floats_with_dotes hotel.avg_rate %}</span>{{ amount }}
+                                            {% plural amount "отзыв" "отзыва" "отзывов" %}
+                                        </div>
+                                    {% endwith %}
                                     <h4 class="mb-0 navy">{{ hotel.name }}</h4>
                                     <span><i class="bi bi-geo-alt me-2"></i>{{ hotel.city.name }}</span>
                                 </div>
                                 <div>
-                                    <h4 class="mb-0 pink">{{ hotel.min_price }}</h4>
+                                    <h4 class="mb-0 pink">от {% separate_integers_with_dotes hotel.min_price %}</h4>
                                     <span>за ночь</span>
                                 </div>
                             </div>
@@ -108,56 +107,28 @@
     <!-- top hotels ends -->
 
     <!-- testimonial starts -->
-    <section class="testimonial pb-6 pt-9" style="background-image: url(images/testimonial.png)">
+    <section class="testimonial pb-6 pt-9" style="background-image: url({% static 'images/testimonial.png' %})">
         <div class="container">
             <div class="text-center mb-5 pb-2 w-50 mx-auto">
                 <h4 class="mb-0">Отзывы</h4>
                 <h2 class="m-0">Что <span class="pink">о нас говорят</span></h2>
             </div>
             <div class="row">
-                <div class="col-sm-12">
-                    <div class="testimonial-item1">
-                        <div class="author-info mb-2">
-                            <img src="images/testimonial/img1.jpg" alt="user">
-                            <h4 class="my-1 pink">Алекс Иванов</h4>
-                            <p class="my-0">21 июля 2020</p>
+                {% for review in reviews %}
+                    <div class="col-sm-12">
+                        <div class="testimonial-item1">
+                            <div class="author-info mb-2">
+                                <img src="{{ review.user.profile.avatar.url }}" alt="user">
+                                <h4 class="my-1 pink">{{ review.user.first_name}} {{ review.user.last_name }}</h4>
+                                <p class="my-0">{{ review.updated|date:"d E Y"}}</p>
+                            </div>
+                            <div class="details d-flex justify-content-between">
+                                <p class="m-0">{{ review.text }}</p>
+                            </div>
+                            <i class="bi bi-chat-left-quote-fill"></i>
                         </div>
-                        <div class="details d-flex justify-content-between">
-                            <p class="m-0">Этим летом летал на Кубу - это был, наверное, самый лучший отель, в котором
-                                я когда либо бывал. Плюс получил большой кэшбек. Вобщем все огонь!</p>
-                        </div>
-                        <i class="bi bi-chat-left-quote-fill"></i>
                     </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="testimonial-item1">
-                        <div class="author-info mb-2">
-                            <img src="images/testimonial/img2.jpg" alt="user">
-                            <h4 class="my-1 pink">Федор Макаров</h4>
-                            <p class="my-0">22 июля 2020</p>
-                        </div>
-                        <div class="details d-flex justify-content-between">
-                            <p class="m-0">Барселона меня поразила своей архитектурой. Шикарность отелей в Испании выше
-                                всяких похвал. Мы были в трешке, но нам показалось, что отдыхали мы в пятизвездочном
-                                отеле.</p>
-                        </div>
-                        <i class="bi bi-chat-left-quote-fill"></i>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="testimonial-item1">
-                        <div class="author-info mb-2">
-                            <img src="images/testimonial/img3.jpg" alt="user">
-                            <h4 class="my-1 pink">Женя Кац</h4>
-                            <p class="my-0">23 июля 2020</p>
-                        </div>
-                        <div class="details d-flex justify-content-between">
-                            <p class="m-0">Австралия, пляж, океан и серфинг - что еще нужно для прекрасного отдыха? Нужен
-                                прекрасный отель и он у нас был! Всем остался доволен, всем рекомендую.</p>
-                        </div>
-                        <i class="bi bi-chat-left-quote-fill"></i>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>

@@ -1,0 +1,105 @@
+<div class="col-lg-4 col-xs-12 mb-4">
+    <div class="sidebar-sticky">
+        <div class="sidebar-item mb-4">
+            <form action="." method="get" class="form-content" id="form">
+                <h4 class="title text-white">Поиск отелей</h4>
+                <div class="row g-3">
+                    <div class="col-lg-12">
+                        <label for="id_destination" class="text-white">{{ form.country.label }}</label>
+                        {{ form.country }}
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="check_in" class="text-white">{{ form.arrival_date.label }}</label>
+                        {{ form.arrival_date }}
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="check_out" class="text-white">{{ form.departure_date.label }}</label>
+                        {{ form.departure_date }}
+                    </div>
+                    <div class="col-lg-12">
+                        {{ form.is_available }}
+                        <label class="form-check-label text-white" for="available">
+                            {{ form.is_available.label }}
+                        </label>
+                    </div>
+                    <div class="col-lg-12">
+                        <button type="submit" class="nir-btn w-100">
+                            <i class="bi bi-search me-2"></i>Найти
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="list-sidebar">
+            <div class="sidebar-item">
+                <h4>Цена за ночь</h4>
+                <div class="input-group mb-3">
+                    {{ form.min_price }}
+                    <span class="input-group-text">-</span>
+                    {{ form.max_price }}
+                </div>
+            </div>
+            <div class="sidebar-item">
+                <h4>Категория отеля</h4>
+                <div class="form-check">
+                    {{ form.five_star_hotel }}
+                    <label for="id_star5">
+                                    <span class="star-rating">
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                    </span>
+                    </label>
+                </div>
+                <div class="form-check">
+                    {{ form.four_star_hotel }}
+                    <label for="id_star4">
+                                    <span class="star-rating">
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                    </span>
+                    </label>
+                </div>
+                <div class="form-check">
+                    {{ form.three_star_hotel }}
+                    <label for="id_star3">
+                                    <span class="star-rating">
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                    </span>
+                    </label>
+                </div>
+                <div class="form-check">
+                    {{ form.two_star_hotel }}
+                    <label for="id_star2">
+                                    <span class="star-rating">
+                                        <span class="bi bi-star-fill"></span>
+                                        <span class="bi bi-star-fill"></span>
+                                    </span>
+                    </label>
+                </div>
+                <div class="form-check">
+                    {{ form.one_star_hotel }}
+                    <label for="id_star1">
+                                    <span class="star-rating">
+                                        <span class="bi bi-star-fill"></span>
+                                    </span>
+                    </label>
+                </div>
+            </div>
+            <div class="sidebar-item">
+                <h4>Сервис</h4>
+                {% for option in form.options %}
+                    <div class="form-check">
+                        {{ option }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
