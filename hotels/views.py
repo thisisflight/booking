@@ -1,3 +1,5 @@
+import datetime
+
 from django.db.models import Q
 from django.views.generic import ListView, DetailView
 
@@ -17,7 +19,8 @@ class HotelListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.select_related('city', 'country').prefetch_related('reviews')
+        queryset = queryset.select_related('city', 'country')
+        queryset = queryset.prefetch_related('reviews')
         queryset = queryset.with_cheapest_price_and_average_rate()
         form = HotelFilterForm(self.request.GET)
         if form.is_valid():
@@ -46,10 +49,11 @@ class HotelListView(ListView):
             filter_options = form.cleaned_data.get('options')
             if filter_country:
                 queryset = queryset.filter(country=filter_country)
-            if filter_arrival_date:
-                queryset = queryset.filter(~Q(rooms__reservations__arrival_date__gte=filter_arrival_date))
-            if filter_departure_date:
-                queryset = queryset.filter(~Q(rooms__reservations__arrival_date__lte=filter_arrival_date))
+            if filter_arrival_date and filter_departure_date:
+                queryset = queryset.filter(
+                    ~Q(reservations__arrival_date__exact=filter_arrival_date) &
+                    ~Q(reservations__departure_date__exact=filter_departure_date)
+                )
             if filter_min_price:
                 queryset = queryset.filter(rooms__price__gte=filter_min_price)
             if filter_max_price:
@@ -69,10 +73,28 @@ class HotelDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        previous_link = self.request.META.get('HTTP_REFERER')
+        if previous_link and len(previous_link.split('?')) > 1:
+            request_data = dict([item.split('=') for item in previous_link.split('?')[1].split('&')])
+            arrival_date = request_data.get('arrival_date')
+            if arrival_date:
+                arrival_date = datetime.datetime.strptime(arrival_date, '%Y-%m-%d')
+            departure_date = request_data.get('departure_date')
+            if departure_date:
+                departure_date = datetime.datetime.strptime(departure_date, '%Y-%m-%d')
+            context['arrival_date'] = arrival_date
+            context['departure_date'] = departure_date
+            rooms = self.object.rooms.all()
+            available_rooms = rooms.filter(~Q(**{'reservations__arrival_date__gte': arrival_date}) &
+                                           ~Q(**{'reservations__departure_date__lte': departure_date}))
+            available_rooms_data = dict([(room.pk, None) for room in available_rooms]) if available_rooms else None
+            context['rooms'] = rooms
+            context['rooms_data'] = available_rooms_data
+        else:
+            context['rooms'] = self.object.rooms.all()
         reviews = self.object.reviews.select_related('user__profile').order_by('-pk')
         context['title'] = "Бронирование отеля"
         context['options'] = self.object.options.all()
-        context['rooms'] = self.object.rooms.all()
         context['reviews'] = reviews
         context['reviews_amount'] = len(reviews)
         return context

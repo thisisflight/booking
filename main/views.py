@@ -14,17 +14,22 @@ class MainPage(TemplateView):
         departure_date = request.GET.get('departure_date')
         capacity = request.GET.get('capacity')
         link = reverse_lazy('hotels:hotels-list')
-        if request.GET.get('search', '') == '1' and arrival_date:
-            return HttpResponseRedirect(f"{link}?arrival_date={arrival_date}")
-        elif request.GET.get('search', '') == '1' and capacity:
-            return HttpResponseRedirect(f"{link}?capacity={capacity}")
-        elif request.GET.get('search', '') == '1' and arrival_date and departure_date:
-            return HttpResponseRedirect(f"{link}?arrival_date={arrival_date}"
-                                        f"&departure_date={departure_date}")
-        elif request.GET.get('search', '') == '1' and arrival_date and departure_date and capacity:
-            return HttpResponseRedirect(f"{link}?arrival_date={arrival_date}"
-                                        f"&departure_date={departure_date}"
-                                        f"&capacity={capacity}")
+        search = True if request.GET.get('search') == '1' else False
+        if search:
+            if arrival_date and departure_date and capacity:
+                return HttpResponseRedirect(f"{link}?arrival_date={arrival_date}"
+                                            f"&departure_date={departure_date}"
+                                            f"&capacity={capacity}")
+            elif arrival_date and departure_date:
+                return HttpResponseRedirect(f"{link}?arrival_date={arrival_date}"
+                                            f"&departure_date={departure_date}")
+            elif arrival_date and capacity:
+                return HttpResponseRedirect(f"{link}?arrival_date={arrival_date}"
+                                            f"&capacity={capacity}")
+            elif capacity:
+                return HttpResponseRedirect(f"{link}?capacity={capacity}")
+            elif arrival_date:
+                return HttpResponseRedirect(f"{link}?arrival_date={arrival_date}")
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

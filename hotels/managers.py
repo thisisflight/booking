@@ -16,3 +16,8 @@ class CustomHotelQuerySet(models.QuerySet):
             min_price=Min('rooms__price', output_field=IntegerField()),
             avg_rate=Avg('reviews__rate', output_field=FloatField()),
         ).all()
+
+
+class CustomRoomQuerySet(models.QuerySet):
+    def with_availability(self):
+        pass

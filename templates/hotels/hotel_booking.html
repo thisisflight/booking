@@ -57,22 +57,29 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <h5>Дата заезда</h5>
-                                    <h6 class="text-primary">01 января 2020</h6>
-                                    <!--                                <h6 class="text-secondary">&#45;&#45;</h6>-->
+                                    {% if arrival_date %}
+                                        <h6 class="text-primary">{{ arrival_date|date:"d E Y" }}</h6>
+                                    {% else %}
+                                        <h6 class="text-secondary">&#45;&#45;</h6>
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-3">
                                     <h5>Дата отъезда</h5>
-                                    <h6 class="text-primary">11 января 2020</h6>
-                                    <!--                                <h6 class="text-secondary">&#45;&#45;</h6>-->
+                                    {% if departure_date %}
+                                        <h6 class="text-primary">{{ departure_date|date:"d E Y"}}</h6>
+                                    {% else %}
+                                        <h6 class="text-secondary">&#45;&#45;</h6>
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-3 text-center">
                                     <h5>Доступность</h5>
-                                    <!-- available -->
-                                    <h6 class="text-success"><i class="bi bi-calendar-check me-2"></i>Есть места</h6>
-                                    <!-- not available -->
-                                    <!--                                 <h6 class="text-secondary"><i class="bi bi-calendar-x me-2"></i>Мест нет</h6>-->
-                                    <!-- lack of information-->
-                                    <!--                                <h6 class="text-secondary">Выберите даты</h6>-->
+                                    {% if rooms_data %}
+                                        <h6 class="text-success"><i class="bi bi-calendar-check me-2"></i>Есть места</h6>
+                                    {% elif not arrival_date or not departure_date %}
+                                        <h6 class="text-secondary">Выберите даты</h6>
+                                    {% else %}
+                                        <h6 class="text-secondary"><i class="bi bi-calendar-x me-2"></i>Мест нет</h6>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -132,7 +139,7 @@
                                         </div>
                                         <div class="comment-content w-100">
                                             <h5 class="mb-1">{{ review.user.first_name }}</h5>
-                                            <p class="comment-date">{{ review.created|date:"t E Y"}}</p>
+                                            <p class="comment-date">{{ review.created|date:"t E Y" }}</p>
                                             <div class="comment-rate">
                                                 <div class="rating mar-right-15">
                                                     {% with ''|center:review.rate as range %}

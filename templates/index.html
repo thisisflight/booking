@@ -50,7 +50,7 @@
                         <h4 class="mb-0 navy">{{ country.name }}</h4>
                         <h4 class="mb-0 pink">от {% separate_integers_with_dotes country.min_price %}</h4>
                     </div>
-                    <a href="#" class="nir-btn">
+                    <a href="{% url 'hotels:hotels-list' %}?country={{ country.pk }}" class="nir-btn">
                         <span class="white">Бронировать</span>
                         <i class="bi bi-caret-right-fill text-white"></i>
                     </a>
@@ -92,7 +92,7 @@
                                 </div>
                             </div>
                             <div class="desti-overlay">
-                                <a href="{% url 'hotels:hotel-detail' hotel.pk %}" class="nir-btn">
+                                <a href="{{ hotel.get_absolute_url }}" class="nir-btn">
                                     <span class="text-white">Бронировать</span>
                                     <i class="bi bi-arrow-right text-white"></i>
                                 </a>

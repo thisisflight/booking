@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.core.validators import (MinValueValidator,
                                     MaxValueValidator)
 from django.db import models
+from django.urls import reverse
+
 from .managers import CustomCountryQuerySet, CustomHotelQuerySet
 
 
@@ -91,6 +93,9 @@ class Hotel(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+    def get_absolute_url(self):
+        return reverse('hotels:hotel-detail', kwargs={'pk': self.pk})
 
     class Meta:
         db_table = 'hotels'
