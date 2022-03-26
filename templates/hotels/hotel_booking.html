@@ -139,7 +139,7 @@
                                         </div>
                                         <div class="comment-content w-100">
                                             <h5 class="mb-1">{{ review.user.first_name }}</h5>
-                                            <p class="comment-date">{{ review.created|date:"t E Y" }}</p>
+                                            <p class="comment-date">{{ review.created|date:"d E Y" }}</p>
                                             <div class="comment-rate">
                                                 <div class="rating mar-right-15">
                                                     {% with ''|center:review.rate as range %}

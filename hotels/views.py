@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.views.generic import ListView, DetailView
 
 from .forms import HotelFilterForm
-from .models import Hotel
+from .models import Hotel, Room
 
 
 class HotelListView(ListView):
@@ -73,9 +73,11 @@ class HotelDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        current_hotel_id = self.object.pk
         previous_link = self.request.META.get('HTTP_REFERER')
         if previous_link and len(previous_link.split('?')) > 1:
-            request_data = dict([item.split('=') for item in previous_link.split('?')[1].split('&')])
+            request_data = dict([item.split('=')
+                                 for item in previous_link.split('?')[1].split('&')])
             arrival_date = request_data.get('arrival_date')
             if arrival_date:
                 arrival_date = datetime.datetime.strptime(arrival_date, '%Y-%m-%d')
@@ -84,12 +86,15 @@ class HotelDetailView(DetailView):
                 departure_date = datetime.datetime.strptime(departure_date, '%Y-%m-%d')
             context['arrival_date'] = arrival_date
             context['departure_date'] = departure_date
-            rooms = self.object.rooms.all()
-            available_rooms = rooms.filter(~Q(**{'reservations__arrival_date__gte': arrival_date}) &
-                                           ~Q(**{'reservations__departure_date__lte': departure_date}))
-            available_rooms_data = dict([(room.pk, None) for room in available_rooms]) if available_rooms else None
+            reserved_rooms = self.object.rooms.filter(
+                Q(**{'reservations__arrival_date__gte': arrival_date}) &
+                Q(**{'reservations__departure_date__lte': departure_date})
+            ).values_list('id')
+            rooms = Room.objects.filter(
+                ~Q(id__in=reserved_rooms)
+                & Q(hotel_id=current_hotel_id)
+            )
             context['rooms'] = rooms
-            context['rooms_data'] = available_rooms_data
         else:
             context['rooms'] = self.object.rooms.all()
         reviews = self.object.reviews.select_related('user__profile').order_by('-pk')
