@@ -73,7 +73,7 @@
                                 </div>
                                 <div class="col-md-3 text-center">
                                     <h5>Доступность</h5>
-                                    {% if rooms_data %}
+                                    {% if rooms_amount %}
                                         <h6 class="text-success"><i class="bi bi-calendar-check me-2"></i>Есть места</h6>
                                     {% elif not arrival_date or not departure_date %}
                                         <h6 class="text-secondary">Выберите даты</h6>
@@ -100,10 +100,21 @@
                                                     <p class="card-text">{{ room.description }}</p>
                                                 </div>
                                                 <div class="col-md-4 text-center">
-                                                    <p class="mb-1">
-                                                        {% separate_integers_with_dotes room.price %} / ночь
-                                                    </p>
-                                                    <a href="../booking_list.html" class="nir-btn w-100">Я бронирую</a>
+                                                    {% if room.id in ids %}
+                                                        <p class="mb-1 text-danger">На выбранные даты мест нет</p>
+                                                    {% elif not arrival_date or not departure_date %}
+                                                        <p class="mb-1">
+                                                            {% separate_integers_with_dotes room.price %} / ночь
+                                                        </p>
+                                                        <a href="{% url 'main:index' %}" class="btn btn-outline-secondary">
+                                                            Указать даты поездки
+                                                        </a>
+                                                    {% else %}
+                                                        <p class="mb-1">
+                                                            {% separate_integers_with_dotes room.price %} / ночь
+                                                        </p>
+                                                        <a href="#" class="nir-btn w-100">Я бронирую</a>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>

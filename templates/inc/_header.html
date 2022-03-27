@@ -8,12 +8,17 @@
             </a>
             <div class="ms-3">
                 {% if user.is_authenticated %}
-                    <a href="#" class="text-white me-2"><i class="bi bi-person-circle me-1"></i>Мой аккаунт</a>
+                    <a href="{% url 'accounts:profile' %}" class="text-white me-2">
+                        <i class="bi bi-person-circle me-1"></i>Мой аккаунт
+                    </a>
                 {% else %}
-                    <a href="#" class="text-white me-2"><i class="bi bi-person-plus me-1"></i>Регистрация</a>
-                    <a href="#" class="text-white"><i class="bi bi-box-arrow-right me-1"></i>Вход</a>
+                    <a href="{% url 'accounts:sign-up' %}" class="text-white me-2">
+                        <i class="bi bi-person-plus me-1"></i>Регистрация
+                    </a>
+                    <a href="{% url 'accounts:sign-in' %}" class="text-white">
+                        <i class="bi bi-box-arrow-right me-1"></i>Вход
+                    </a>
                 {% endif %}
-
             </div>
         </div>
     </div>

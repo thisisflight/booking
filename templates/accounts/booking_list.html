@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    {% include 'inc/_breadcrumb.html' %}
+    <!-- Dashboard starts -->
+    <div class="container my-5 py-5">
+        <div class="row">
+            <div class="col-lg-3">
+                {% include 'inc/_profile_info.html' %}
+                <!-- Responsive Navigation Trigger -->
+                {% include 'inc/_profile_navigation.html' %}
+            </div>
+            <div class="col-lg-9">
+                <div class="shadow-sm rounded">
+                    <div class="dashboard-title">
+                        <h4 class="mb-0">Бронирования</h4>
+                    </div>
+                    <div class="table-responsive table-desi">
+                        <table class="basic-table table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Страна</th>
+                                <th>Город</th>
+                                <th>Отель</th>
+                                <th>Дата заезда</th>
+                                <th>Дата отъезда</th>
+                                <th>Моя оценка</th>
+                                <th>Отменить бронь</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Англия</td>
+                                <td>Лондон</td>
+                                <td>Radisson Collection Hotel, 5*</td>
+                                <td>01.01.2001</td>
+                                <td>15.01.2001</td>
+                                <th>4</th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <td>Куба</td>
+                                <td>Варадеро</td>
+                                <td>Sol Palmeras Starfish, 4*</td>
+                                <td>01.07.2001</td>
+                                <td>14.07.2001</td>
+                                <th>--</th>
+                                <th>
+                                    <a href="" class="btn btn-sm btn-danger">Отменить</a>
+                                </th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Dashboard ends -->
+{% endblock %}

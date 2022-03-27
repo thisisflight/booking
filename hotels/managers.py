@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Min, FloatField, IntegerField, Avg
+from django.db.models import Min, FloatField, IntegerField, Avg, Count
 from django.db.models.functions import Coalesce
 
 
@@ -17,7 +17,8 @@ class CustomHotelQuerySet(models.QuerySet):
             avg_rate=Avg('reviews__rate', output_field=FloatField()),
         ).all()
 
-
-class CustomRoomQuerySet(models.QuerySet):
-    def with_availability(self):
-        pass
+    def with_all_reservations_and_views(self):
+        return self.annotate(
+            bookings=Count('reservations', output_field=IntegerField()),
+            all_reviews=Count('reservations__reviews', output_field=IntegerField(), distinct=True),
+        ).all()

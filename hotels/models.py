@@ -140,38 +140,6 @@ class Room(models.Model):
         verbose_name_plural = 'Номера'
 
 
-class Review(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Гость',
-        related_name='reviews'
-    )
-    hotel = models.ForeignKey(
-        Hotel, on_delete=models.CASCADE, verbose_name='Отель',
-        related_name='reviews'
-    )
-    rate = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
-        verbose_name='Рейтинг'
-    )
-    text = models.TextField(
-        max_length=3000, verbose_name='Текст отзыва'
-    )
-    created = models.DateTimeField(
-        auto_now_add=True, verbose_name='Создан'
-    )
-    updated = models.DateTimeField(
-        auto_now=True, verbose_name='Изменен'
-    )
-
-    def __str__(self):
-        return self.user.username
-
-    class Meta:
-        db_table = 'reviews'
-        verbose_name = 'Отзыв'
-        verbose_name_plural = 'Отзывы'
-
-
 class Reservation(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
@@ -194,9 +162,39 @@ class Reservation(models.Model):
     )
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username} {self.arrival_date} - {self.departure_date}"
 
     class Meta:
         db_table = 'reservations'
         verbose_name = 'Бронь'
         verbose_name_plural = 'Брони'
+
+
+class Review(models.Model):
+    reservation = models.ForeignKey(
+        Reservation, on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Бронь',
+        null=True
+    )
+    rate = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name='Рейтинг'
+    )
+    text = models.TextField(
+        max_length=3000, verbose_name='Текст отзыва'
+    )
+    created = models.DateTimeField(
+        auto_now_add=True, verbose_name='Создан'
+    )
+    updated = models.DateTimeField(
+        auto_now=True, verbose_name='Изменен'
+    )
+
+    def __str__(self):
+        return str(self.reservation)
+
+    class Meta:
+        db_table = 'reviews'
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'

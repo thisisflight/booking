@@ -1,12 +1,13 @@
-from django.contrib import admin
-from django.conf import settings
-from django.urls import path, include
 import debug_toolbar
+from django.conf import settings
+from django.contrib import admin
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('hotels/', include('hotels.urls')),
+    path('user/', include('accounts.urls')),
 ]
 
 if settings.DEBUG:

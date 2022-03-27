@@ -21,3 +21,10 @@ def separate_floats_with_dotes(value):
     float_part = value - int_part
     float_part = float_part * 10 if float_part else 0
     return '.'.join([str(int_part), str(float_part)])
+
+
+@register.simple_tag
+def beautify_phone_view(phone_number):
+    if len(phone_number) == 11:
+        return '+7 ({}{}{}) {}{}{}-{}{}-{}{}'.format(*list(phone_number)[1:])
+    return phone_number

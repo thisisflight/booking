@@ -69,4 +69,4 @@ class RoomAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    pass
+    list_select_related = ['reservation__user']

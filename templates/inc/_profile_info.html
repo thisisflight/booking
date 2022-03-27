@@ -1,0 +1,10 @@
+{% load plurals %}
+<div class="author-news mb-3">
+    <div class="author-news-content text-center py-3 bg-secondary">
+        <div class="author-thumb my-1">
+            <img src="{{ user.profile.get_avatar_url }}" alt="author">
+        </div>
+        <h3 class="mb-1 white">{{ user.first_name }} {{ user.last_name }}</h3>
+        <p class="text-white"><i class="bi bi-phone"></i>{% beautify_phone_view  user.profile.phone %}</p>
+    </div>
+</div>

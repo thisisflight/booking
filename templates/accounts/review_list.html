@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    {% include 'inc/_breadcrumb.html' %}
+    <!-- Dashboard starts -->
+    <div class="container my-5 py-5">
+        <div class="row">
+            <div class="col-lg-3">
+                {% include 'inc/_profile_info.html' %}
+                <!-- Responsive Navigation Trigger -->
+                {% include 'inc/_profile_navigation.html' %}
+            </div>
+            <div class="col-lg-9">
+                <div class="row mb-4">
+                    <div class="col-lg-12 col-md-12 col-xs-12">
+                        <div class="shadow-sm rounded">
+                            <div class="dashboard-title">
+                                <h4 class="mb-0">Отзывы</h4>
+                            </div>
+                            <div class="table-responsive table-desi">
+                                <table class="basic-table table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Тур</th>
+                                        <th>Оценка</th>
+                                        <th>Отзыв</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for review in reviews %}
+                                        {% with review.reservation as reserve %}
+                                            <tr>
+                                                <td>{{ reserve.hotel.name }}, {{ reserve.hotel.category }}*<br>
+                                                    <i class="bi bi-geo-alt me-1"></i>
+                                                    {{ reserve.hotel.city }}, {{ reserve.hotel.country }}<br>
+                                                    <i class="bi bi-calendar4-event me-1"></i>
+                                                    {{ reserve.arrival_date|date:"d.m.Y" }}
+                                                    - {{ reserve.departure_date|date:"d.m.Y" }}
+                                                </td>
+                                                <th>{{ review.rate }}</th>
+                                                <th>{{ review.text }}</th>
+                                            </tr>
+                                        {% endwith %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Dashboard ends -->
+{% endblock %}

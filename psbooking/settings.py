@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,7 +25,7 @@ INSTALLED_APPS = [
     'hotels.apps.HotelsConfig',
     'accounts.apps.AccountsConfig',
     'debug_toolbar',
-    'django_cleanup.apps.CleanupConfig'
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -100,6 +101,10 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = reverse_lazy('accounts:sign-in')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
