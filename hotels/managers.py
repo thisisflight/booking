@@ -14,7 +14,8 @@ class CustomHotelQuerySet(models.QuerySet):
     def with_cheapest_price_and_average_rate(self):
         return self.annotate(
             min_price=Min('rooms__price', output_field=IntegerField()),
-            avg_rate=Avg('reviews__rate', output_field=FloatField()),
+            avg_rate=Coalesce(Avg('reservations__reviews__rate', output_field=FloatField()), 0.0),
+            amount=Count('reservations__reviews', output_field=IntegerField(), distinct=True)
         ).all()
 
     def with_all_reservations_and_views(self):

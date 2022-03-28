@@ -34,10 +34,10 @@ class MainPage(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        countries = Country.objects.with_cheapest_price()
-        hotels = Hotel.objects.select_related('city').prefetch_related('reviews')
-        hotels = hotels.with_cheapest_price_and_average_rate().order_by('min_price')[:3]
-        reviews = Review.objects.select_related('user__profile', 'hotel').all().order_by('-pk')[:3]
+        countries = Country.objects.with_cheapest_price().only('name', 'photo')
+        hotels = Hotel.objects.select_related('city').prefetch_related('reservations__reviews')
+        hotels = hotels.with_cheapest_price_and_average_rate().only('name', 'city', 'photo').order_by('min_price')[:3]
+        reviews = Review.objects.select_related('reservation__user__profile').all().order_by('-pk')[:3]
         context['flag'] = True
         context['main'] = True
         context['countries'] = countries

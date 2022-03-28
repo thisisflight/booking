@@ -76,13 +76,11 @@
                             </div>
                             <div class="desti-content hotel-content d-flex align-items-center justify-content-between bg-white py-2 px-3">
                                 <div>
-                                    {% with hotel.reviews.count as amount %}
-                                        <div class="pb-2">
+                                    <div class="pb-2">
                                             <span class="bg-navy text-white p-2 me-2">
-                                                {% separate_floats_with_dotes hotel.avg_rate %}</span>{{ amount }}
-                                            {% plural amount "отзыв" "отзыва" "отзывов" %}
-                                        </div>
-                                    {% endwith %}
+                                                {% separate_floats_with_dotes hotel.avg_rate %}</span>{{ hotel.amount }}
+                                        {% plural hotel.amount "отзыв" "отзыва" "отзывов" %}
+                                    </div>
                                     <h4 class="mb-0 navy">{{ hotel.name }}</h4>
                                     <span><i class="bi bi-geo-alt me-2"></i>{{ hotel.city.name }}</span>
                                 </div>
@@ -118,8 +116,9 @@
                     <div class="col-sm-12">
                         <div class="testimonial-item1">
                             <div class="author-info mb-2">
-                                <img src="{{ review.user.profile.avatar.url }}" alt="user">
-                                <h4 class="my-1 pink">{{ review.user.first_name}} {{ review.user.last_name }}</h4>
+                                <img src="{{ review.reservation.user.profile.avatar.url }}" alt="user">
+                                <h4 class="my-1 pink">{{ review.reservation.user.first_name}}
+                                    {{ review.reservation.user.last_name }}</h4>
                                 <p class="my-0">{{ review.updated|date:"d E Y"}}</p>
                             </div>
                             <div class="details d-flex justify-content-between">

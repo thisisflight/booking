@@ -4,7 +4,7 @@ from django.db.models import Q, Max
 from django.views.generic import ListView, DetailView
 
 from .forms import HotelFilterForm
-from .models import Hotel
+from .models import Hotel, Review
 
 
 class HotelListView(ListView):
@@ -20,7 +20,7 @@ class HotelListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.select_related('city', 'country')
-        queryset = queryset.prefetch_related('reviews')
+        queryset = queryset.prefetch_related('reservations__reviews')
         queryset = queryset.with_cheapest_price_and_average_rate()
         form = HotelFilterForm(self.request.GET)
         if form.is_valid():
@@ -78,7 +78,8 @@ class HotelDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         previous_link = self.request.META.get('HTTP_REFERER')
-        rooms = self.object.rooms.all()
+        hotel = self.object
+        rooms = hotel.rooms.all()
         context['rooms'] = rooms
         if previous_link and len(previous_link.split('?')) > 1:
             request_data = dict([item.split('=')
@@ -92,16 +93,16 @@ class HotelDetailView(DetailView):
             context['arrival_date'] = arrival_date
             context['departure_date'] = departure_date
             if all([arrival_date, departure_date]):
-                reserved_rooms = self.object.rooms.filter(
+                reserved_rooms = rooms.filter(
                     reservations__arrival_date__lte=arrival_date,
                     reservations__departure_date__gte=arrival_date
                 ).values_list('id')
                 rooms_ids = {value[0]: None for value in reserved_rooms}
                 context['ids'] = rooms_ids
                 context['rooms_amount'] = len(rooms)
-        reviews = self.object.reviews.select_related('user__profile').order_by('-pk')
+        reviews = Review.objects.filter(reservation__hotel=hotel)
         context['title'] = "Бронирование отеля"
-        context['options'] = self.object.options.all()
+        context['options'] = hotel.options.all()
         context['reviews'] = reviews
         context['reviews_amount'] = len(reviews)
         return context
@@ -109,6 +110,6 @@ class HotelDetailView(DetailView):
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.select_related('country', 'city')
-        queryset = queryset.prefetch_related('options', 'rooms', 'reviews')
+        queryset = queryset.prefetch_related('options', 'rooms', 'reservations__reviews')
         queryset = queryset.with_cheapest_price_and_average_rate()
         return queryset
