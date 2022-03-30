@@ -1,6 +1,6 @@
 from django import forms
 
-from hotels.models import Country, Option, Hotel, Room
+from hotels.models import Country, Option, Hotel, Room, Review
 from utils.forms import update_fields_widget
 
 
@@ -15,20 +15,36 @@ class HotelForm(forms.ModelForm):
         self.fields['repaired_recently'].widget.attrs['class'] = 'form-checkbox'
 
 
-class RoomCreateForm(forms.ModelForm):
+class RoomCreationForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = '__all__'
-
-
-class RoomUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Room
-        fields = '__all__'
+        exclude = ['hotel', 'id', 'capacity']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         update_fields_widget(self, self.fields, 'form-control')
+
+
+class BaseRoomCreationFormset(forms.BaseInlineFormSet):
+    def get_queryset(self):
+        return Room.objects.none()
+
+    def clean(self):
+        if any(self.errors):
+            return
+
+        all_forms_is_empty = True
+
+        for form in self.forms:
+            all_forms_is_empty = all_forms_is_empty and not any(form.cleaned_data)
+
+        if all_forms_is_empty:
+            raise forms.ValidationError("Все формы пустые. Заполните данные.")
+
+
+RoomFormset = forms.inlineformset_factory(
+    Hotel, Room, form=RoomCreationForm, formset=BaseRoomCreationFormset, extra=2
+)
 
 
 class HotelFilterForm(forms.Form):
@@ -114,3 +130,17 @@ class HotelFilterForm(forms.Form):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({'form': 'form'})
+
+
+class ReviewForm(forms.ModelForm):
+
+    CHOICES = ((5, 5), (4, 4), (3, 3), (2, 2), (1, 1))
+
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['reservation'].widget = forms.HiddenInput()
+        self.fields['rate'].widget = forms.Select(choices=self.CHOICES)

@@ -2,7 +2,6 @@
 {% load static %}
 {% block content %}
     {% include 'inc/_breadcrumb.html' %}
-    <!-- Dashboard starts -->
     <div class="container my-5 py-5">
         <div class="row">
             <div class="col-lg-3">
@@ -10,83 +9,55 @@
                 {% include 'inc/_profile_navigation.html' %}
             </div>
             <div class="col-lg-9">
-                <div class="card border-0 shadow-sm">
-                    <div class="dashboard-title">
-                        <h4 class="mb-0">
-                            Создание номеров для
-                            <a href="{{ hotel.get_update_url }}" class="pink">{{ hotel.name }}</a>
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <div class="card-header mb-3 text-center">
-                                    Номер 1
-                                </div>
-                                <form action="hotel_update.html" method="post" enctype="multipart/form-data">
-                                    <div class="mb-3 text-start">
-                                        <label for="formFile1" class="form-label">Фотография номера</label>
-                                        <input class="form-control" type="file" id="formFile1">
+                {{ formset.non_form_errors }}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ formset.management_form }}
+                    <div class="card border-0 shadow-sm">
+                        <div class="dashboard-title">
+                            <h4 class="mb-0">
+                                Создание номеров для
+                                <a href="{{ hotel.get_update_url }}" class="pink">{{ hotel.name }}</a>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for form in formset %}
+                                    <div class="col-md-6">
+                                        <div class="card-header mb-3 text-center">
+                                            Номер {{ forloop.counter }}
+                                        </div>
+                                        <div class="mb-3 text-start">
+                                            <label for="formFile1" class="form-label">Фотография номера</label>
+                                            {{ form.photo }}
+                                            {{ form.photo.errors }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="id_type1">Тип номера</label>
+                                            {{ form.type }}
+                                            {{ form.type.errors }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="id_price1">Цена за ночь</label>
+                                            {{ form.price }}
+                                            {{ form.price.errors }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="id_description1">Описание</label>
+                                            {{ form.description }}
+                                            {{ form.description.errors }}
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="id_type1">Тип номера</label>
-                                        <select id="id_type1">
-                                            <option value="0">------------------</option>
-                                            <option value="1">Комфорт</option>
-                                            <option value="2">Полулюкс</option>
-                                            <option value="3">Люкс</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="id_price1">Цена за ночь</label>
-                                        <input type="number" class="form-control" id="id_price1">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="id_description1">Описание</label>
-                                        <textarea cols="40" rows="3" maxlength="500" class="form-control"
-                                                  required="" id="id_description1"></textarea>
-                                    </div>
+                                {% endfor %}
+                                <div style="padding: 1rem">
                                     <button type="submit" class="nir-btn">
                                         Сохранить
                                     </button>
-                                </form>
-                            </div>
-                            <div class="col-md-6 mb-4">
-                                <div class="card-header mb-3 text-center">
-                                    Номер 2
                                 </div>
-                                <form action="hotel_update.html" method="post" enctype="multipart/form-data">
-                                    <div class="mb-3 text-start">
-                                        <label for="formFile2" class="form-label">Фотография номера</label>
-                                        <input class="form-control" type="file" id="formFile2">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="id_type2">Тип номера</label>
-                                        <select id="id_type2">
-                                            <option value="0">------------------</option>
-                                            <option value="1">Комфорт</option>
-                                            <option value="2">Полулюкс</option>
-                                            <option value="3">Люкс</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="id_price2">Цена за ночь</label>
-                                        <input type="number" class="form-control" id="id_price2">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="id_description2">Описание</label>
-                                        <textarea cols="40" rows="3" maxlength="500" class="form-control"
-                                                  required="" id="id_description2"></textarea>
-                                    </div>
-                                    <button type="submit" class="nir-btn">
-                                        Сохранить
-                                    </button>
-                                </form>
                             </div>
                         </div>
-
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

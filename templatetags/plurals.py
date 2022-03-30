@@ -17,10 +17,8 @@ def separate_integers_with_dotes(value):
 
 @register.simple_tag
 def separate_floats_with_dotes(value):
-    int_part = int(value)
-    float_part = value - int_part
-    float_part = float_part * 10 if float_part else 0
-    return '.'.join([str(int_part), str(float_part)])
+    value = round(float(value), 1)
+    return str(value).replace(',', '.')
 
 
 @register.simple_tag

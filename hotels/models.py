@@ -131,7 +131,9 @@ class Room(models.Model):
     capacity = models.PositiveSmallIntegerField(
         default=2,
         validators=[MinValueValidator(1), MaxValueValidator(5)],
-        verbose_name='Вместимость'
+        verbose_name='Вместимость',
+        null=True,
+        blank=True
     )
 
     def get_update_url(self):

@@ -1,11 +1,14 @@
-import re
-
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy, reverse
 from django.views.generic import (ListView, DetailView,
                                   CreateView, UpdateView, DeleteView)
-from .forms import HotelFilterForm, HotelForm, RoomUpdateForm, RoomCreateForm
+
+from .forms import (HotelFilterForm, HotelForm,
+                    RoomCreationForm, RoomFormset,
+                    ReviewForm)
 from .models import Hotel, Review, Reservation, Room
 from .services import processing_dates, processing_get_parameters
 
@@ -49,7 +52,26 @@ class HotelDetailView(DetailView):
         context['options'] = hotel.options.all()
         context['reviews'] = reviews
         context['reviews_amount'] = len(reviews)
+        self.getting_review_data(context, hotel, reviews)
         return context
+
+    def getting_review_data(self, context, hotel, reviews):
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            is_reviewed = reviews.filter(reservation__user=user).exists()
+            if not is_reviewed:
+                reserves = Reservation.objects.filter(user=user, hotel=hotel)
+                reserve = reserves.first()
+                if reserves:
+                    context['form'] = ReviewForm(initial={'reservation': reserve})
+
+    def post(self, request, *args, **kwargs):
+        review_form = ReviewForm(request.POST)
+        if review_form.is_valid():
+            Review.objects.create(**review_form.cleaned_data)
+        return HttpResponseRedirect(
+            reverse('hotels:hotel-detail', kwargs={'pk': self.get_object().pk})
+        )
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -86,38 +108,25 @@ class DeleteReservationView(DeleteView):
     success_url = reverse_lazy('accounts:booking-list')
 
 
-class RoomCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    model = Room
-    template_name = 'hotels/room_create.html'
-    form_class = RoomCreateForm
-    permission_required = 'hotels.add_rooms'
-
-    def get(self, request, *args, **kwargs):
-        previous_link = request.META.get('HTTP_REFERER')
-        if previous_link and '/hotels/update-hotel/' in previous_link:
-            return super().get(request, *args, **kwargs)
-        return redirect('main:index')
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.select_related('hotel')
-        return queryset
-
-    def get_success_url(self):
-        return self.object.hotel.get_update_url()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        previous_link = self.request.META.get('HTTP_REFERER')
-        pk = re.findall(r'\d+', previous_link)[-1]
-        hotel = Hotel.objects.get(pk=pk)
-        context['hotel'] = hotel
-        return context
+@permission_required('hotels.add_rooms')
+def create_room(request, hotel_pk):
+    hotel = get_object_or_404(Hotel, pk=hotel_pk)
+    if request.method == 'POST':
+        formset = RoomFormset(
+            request.POST, request.FILES, instance=hotel
+        )
+        if formset.is_valid():
+            formset.save()
+    else:
+        formset = RoomFormset(instance=hotel)
+    return render(request,
+                  'hotels/room_create.html',
+                  {'formset': formset, 'hotel': hotel})
 
 
 class RoomUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Room
-    form_class = RoomUpdateForm
+    form_class = RoomCreationForm
     template_name = 'hotels/room_update.html'
     permission_required = 'hotels.change_rooms'
 

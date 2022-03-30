@@ -146,10 +146,10 @@
                                 {% for review in reviews %}
                                     <div class="comment-box">
                                         <div class="comment-image" style="max-width: 150px; max-height: 150px">
-                                            <img src="{{ review.reservation.user.profile.avatar.url }}" alt="image">
+                                            <img src="{{ review.reservation.user.profile.get_avatar_url }}" alt="image">
                                         </div>
                                         <div class="comment-content w-100">
-                                            <h5 class="mb-1">{{ review.user.first_name }}</h5>
+                                            <h5 class="mb-1">{{ review.reservation.user.first_name }}</h5>
                                             <p class="comment-date">{{ review.created|date:"d E Y" }}</p>
                                             <div class="comment-rate">
                                                 <div class="rating mar-right-15">
@@ -170,21 +170,22 @@
                         </div>
                     </div>
                     <div class="my-4">
-                        <h4>Оставить отзыв</h4>
-                        {% if user.is_authenticated %}
+                        {% if user.is_authenticated and form %}
+                            <h4>Оставить отзыв</h4>
                             <div class="my-4 card border-0 shadow">
                                 <div class="card-body">
-                                    <form action=".." method="post">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{ form.reservation }}
                                         <label for="id_rate">Оценка:</label>
-                                        <input type="number" name="rate" class="form-control" required="" id="id_rate">
+                                        {{ form.rate }}
                                         <label for="id_text">Текст отзыва:</label>
-                                        <textarea name="text" cols="40" rows="3" maxlength="500" class="form-control"
-                                                  id="id_text"></textarea>
+                                        {{ form.text }}
                                         <button type="submit" class="btn btn-primary mt-3">Отправить отзыв</button>
                                     </form>
                                 </div>
                             </div>
-                        {% else %}
+                        {% elif not user.is_authenticated %}
                             <p>
                                 <a href="#" style="color: #F56961">Войти</a>
                                 или
