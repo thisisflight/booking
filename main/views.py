@@ -36,8 +36,15 @@ class MainPage(TemplateView):
         context = super().get_context_data(**kwargs)
         countries = Country.objects.with_cheapest_price().only('name', 'photo')
         hotels = Hotel.objects.select_related('city').prefetch_related('reservations__reviews')
-        hotels = hotels.with_cheapest_price_and_average_rate().only('name', 'city', 'photo').order_by('min_price')[:3]
-        reviews = Review.objects.select_related('reservation__user__profile').all().order_by('-pk')[:3]
+        hotels = hotels.with_cheapest_price_and_average_rate()
+        hotels = hotels.only('name', 'city', 'photo').order_by('min_price')[:3]
+        reviews = Review.objects.select_related('reservation__user__profile')
+        reviews = reviews.only(
+            'updated',
+            'text',
+            'reservation__user__first_name',
+            'reservation__user__last_name'
+        ).order_by('-pk')[:3]
         context['flag'] = True
         context['main'] = True
         context['countries'] = countries

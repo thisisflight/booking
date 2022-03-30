@@ -80,9 +80,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            {% if is_not_customer %}
-                                <a href="#" class="nir-btn m-3">Добавить отель</a>
-                            {% endif %}
+                            <a href="{% url 'hotels:create-hotel' %}" class="nir-btn m-3">Добавить отель</a>
                         </div>
                     </div>
                 </div>

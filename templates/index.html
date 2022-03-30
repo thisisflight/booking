@@ -116,7 +116,7 @@
                     <div class="col-sm-12">
                         <div class="testimonial-item1">
                             <div class="author-info mb-2">
-                                <img src="{{ review.reservation.user.profile.avatar.url }}" alt="user">
+                                <img src="{{ review.reservation.user.profile.get_avatar_url }}" alt="user">
                                 <h4 class="my-1 pink">{{ review.reservation.user.first_name}}
                                     {{ review.reservation.user.last_name }}</h4>
                                 <p class="my-0">{{ review.updated|date:"d E Y"}}</p>

@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.db import models
-from django.urls import reverse
 
 from hotels.models import Country, City
 
@@ -41,9 +40,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-    def get_absolute_url(self):
-        return reverse('accounts:profile')
 
     def get_avatar_url(self):
         return self.avatar.url if self.avatar else f"{settings.STATIC_URL}images/reviewer/1.jpg"

@@ -1,10 +1,13 @@
-import datetime
+import re
 
-from django.db.models import Q, Max
-from django.views.generic import ListView, DetailView
-
-from .forms import HotelFilterForm
-from .models import Hotel, Review
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import (ListView, DetailView,
+                                  CreateView, UpdateView, DeleteView)
+from .forms import HotelFilterForm, HotelForm, RoomUpdateForm, RoomCreateForm
+from .models import Hotel, Review, Reservation, Room
+from .services import processing_dates, processing_get_parameters
 
 
 class HotelListView(ListView):
@@ -24,50 +27,7 @@ class HotelListView(ListView):
         queryset = queryset.with_cheapest_price_and_average_rate()
         form = HotelFilterForm(self.request.GET)
         if form.is_valid():
-            filter_country = form.cleaned_data.get('country')
-            filter_arrival_date = form.cleaned_data.get('arrival_date')
-            filter_departure_date = form.cleaned_data.get('departure_date')
-            filter_min_price = form.cleaned_data.get('min_price')
-            filter_max_price = form.cleaned_data.get('max_price')
-            filter_capacity = form.cleaned_data.get('capacity')
-            stars_list = []
-            filter_five_star = form.cleaned_data.get('five_star_hotel')
-            if filter_five_star:
-                stars_list.append(5)
-            filter_four_star = form.cleaned_data.get('four_star_hotel')
-            if filter_four_star:
-                stars_list.append(4)
-            filter_three_star = form.cleaned_data.get('three_star_hotel')
-            if filter_three_star:
-                stars_list.append(3)
-            filter_two_star = form.cleaned_data.get('two_star_hotel')
-            if filter_two_star:
-                stars_list.append(2)
-            filter_one_star = form.cleaned_data.get('one_star_hotel')
-            if filter_one_star:
-                stars_list.append(1)
-            filter_options = form.cleaned_data.get('options')
-            if filter_country:
-                queryset = queryset.filter(country=filter_country)
-            if filter_arrival_date and filter_departure_date:
-                max_date = queryset.aggregate(
-                    max_date=Max('reservations__departure_date')
-                ).get('max_date')
-                queryset = queryset.filter(
-                    (Q(reservations__arrival_date__lte=filter_arrival_date) &
-                     Q(reservations__departure_date__gte=filter_arrival_date)) |
-                    Q(reservations__departure_date__lte=max_date)
-                )
-            if filter_min_price:
-                queryset = queryset.filter(rooms__price__gte=filter_min_price)
-            if filter_max_price:
-                queryset = queryset.filter(rooms__price__lte=filter_max_price)
-            if stars_list:
-                queryset = queryset.filter(category__in=stars_list)
-            if filter_options:
-                queryset = queryset.filter(options__in=filter_options)
-            if filter_capacity:
-                queryset = queryset.filter(rooms__capacity__gte=filter_capacity)
+            queryset = processing_get_parameters(form, queryset)
         return queryset.order_by('-pk')
 
 
@@ -82,25 +42,9 @@ class HotelDetailView(DetailView):
         rooms = hotel.rooms.all()
         context['rooms'] = rooms
         if previous_link and len(previous_link.split('?')) > 1:
-            request_data = dict([item.split('=')
-                                 for item in previous_link.split('?')[1].split('&')])
-            arrival_date = request_data.get('arrival_date')
-            if arrival_date:
-                arrival_date = datetime.datetime.strptime(arrival_date, '%Y-%m-%d')
-            departure_date = request_data.get('departure_date')
-            if departure_date:
-                departure_date = datetime.datetime.strptime(departure_date, '%Y-%m-%d')
-            context['arrival_date'] = arrival_date
-            context['departure_date'] = departure_date
-            if all([arrival_date, departure_date]):
-                reserved_rooms = rooms.filter(
-                    reservations__arrival_date__lte=arrival_date,
-                    reservations__departure_date__gte=arrival_date
-                ).values_list('id')
-                rooms_ids = {value[0]: None for value in reserved_rooms}
-                context['ids'] = rooms_ids
-                context['rooms_amount'] = len(rooms)
-        reviews = Review.objects.filter(reservation__hotel=hotel)
+            processing_dates(context, previous_link, rooms)
+        reviews = Review.objects.select_related('reservation__user')
+        reviews = reviews.filter(reservation__hotel=hotel)
         context['title'] = "Бронирование отеля"
         context['options'] = hotel.options.all()
         context['reviews'] = reviews
@@ -112,4 +56,72 @@ class HotelDetailView(DetailView):
         queryset = queryset.select_related('country', 'city')
         queryset = queryset.prefetch_related('options', 'rooms', 'reservations__reviews')
         queryset = queryset.with_cheapest_price_and_average_rate()
+        return queryset
+
+
+class HotelCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    model = Hotel
+    form_class = HotelForm
+    template_name = 'hotels/hotel_update.html'
+    success_url = reverse_lazy('accounts:dashboard')
+    permission_required = 'hotels.add_hotels'
+
+
+class HotelUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Hotel
+    form_class = HotelForm
+    template_name = 'hotels/hotel_update.html'
+    permission_required = 'hotels.change_hotels'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        rooms = self.object.rooms.all()
+        context['rooms'] = rooms
+        return context
+
+
+class DeleteReservationView(DeleteView):
+    model = Reservation
+    template_name = 'accounts/booking_list.html'
+    success_url = reverse_lazy('accounts:booking-list')
+
+
+class RoomCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    model = Room
+    template_name = 'hotels/room_create.html'
+    form_class = RoomCreateForm
+    permission_required = 'hotels.add_rooms'
+
+    def get(self, request, *args, **kwargs):
+        previous_link = request.META.get('HTTP_REFERER')
+        if previous_link and '/hotels/update-hotel/' in previous_link:
+            return super().get(request, *args, **kwargs)
+        return redirect('main:index')
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.select_related('hotel')
+        return queryset
+
+    def get_success_url(self):
+        return self.object.hotel.get_update_url()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        previous_link = self.request.META.get('HTTP_REFERER')
+        pk = re.findall(r'\d+', previous_link)[-1]
+        hotel = Hotel.objects.get(pk=pk)
+        context['hotel'] = hotel
+        return context
+
+
+class RoomUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Room
+    form_class = RoomUpdateForm
+    template_name = 'hotels/room_update.html'
+    permission_required = 'hotels.change_rooms'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.select_related('hotel')
         return queryset

@@ -1,15 +1,39 @@
+import datetime
+
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.views import LoginView
+from django.db.models import F, ExpressionWrapper, DurationField
+from django.db.models.functions import Coalesce, Now
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import UpdateView, TemplateView, ListView, CreateView
+from django.views.generic import (UpdateView, TemplateView,
+                                  ListView, CreateView)
 
 from hotels.models import Reservation, Review, Hotel
 from .forms import (ChangeProfileInfoForm, CustomUserCreationForm,
                     CustomAuthenticationForm)
 from .models import Profile
+
+
+class CheckCustomerMixin:
+
+    def check_if_user_is_admin(self):
+        return self.request.user.groups.filter(
+            name__exact='Администратор'
+        ).exists()
+
+    def check_if_user_is_customer(self):
+        return self.request.user.groups.filter(
+            name__exact='Пользователь'
+        )
+
+    def check_if_user_is_not_customer(self):
+        return self.request.user.groups.filter(
+            name__in=['Администратор', 'Контент-менеджер']
+        ).exists()
 
 
 class SignUpView(CreateView):
@@ -81,17 +105,14 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UserDashboardView(LoginRequiredMixin, TemplateView):
+class UserDashboardView(LoginRequiredMixin, PermissionRequiredMixin,
+                        CheckCustomerMixin, TemplateView):
     template_name = 'accounts/dashboard.html'
+    permission_required = 'hotels.add_hotels'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_role = self.request.user.profile.role.name
-        if user_role != 'Пользователь':
-            context['is_not_customer'] = True
-        else:
-            context['is_not_customer'] = False
-        if user_role == 'Администратор':
+        if self.check_if_user_is_admin():
             users_amount = User.objects.all().count()
             reservations_amount = Reservation.objects.count()
             reviews_count = Review.objects.count()
@@ -106,23 +127,38 @@ class UserDashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ReservationListView(LoginRequiredMixin, ListView):
+class ReservationListView(LoginRequiredMixin, CheckCustomerMixin, ListView):
     model = Reservation
     template_name = 'accounts/booking_list.html'
+    context_object_name = 'reservations'
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.select_related('hotel', 'room')
-        queryset = queryset.filter(user=self.request.user)
+        queryset = queryset.select_related(
+            'hotel__city', 'hotel__country', 'room', 'user'
+        )
+        queryset = queryset.prefetch_related('reviews')
+        queryset = queryset.annotate(
+            rate=Coalesce('reviews__rate', 0)
+        )
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        get_context_value(self, context)
+        if self.check_if_user_is_customer():
+            queryset = self.get_queryset().filter(user=self.request.user)
+            queryset = queryset.annotate(
+                deny=ExpressionWrapper(
+                    F('departure_date') - datetime.date.today(),
+                    output_field=DurationField()
+                )
+            )
+            context['is_customer'] = True
+            context['reservations'] = queryset
         return context
 
 
-class ReviewListView(LoginRequiredMixin, ListView):
+class ReviewListView(LoginRequiredMixin, CheckCustomerMixin, ListView):
     model = Review
     template_name = 'accounts/review_list.html'
     context_object_name = 'reviews'
@@ -133,7 +169,6 @@ class ReviewListView(LoginRequiredMixin, ListView):
             'reservation__hotel__country',
             'reservation__hotel__city'
         )
-        queryset = queryset.filter(reservation__user=self.request.user)
         queryset = queryset.only(
             'reservation__hotel__name',
             'reservation__hotel__category',
@@ -148,13 +183,7 @@ class ReviewListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        get_context_value(self, context)
+        if self.check_if_user_is_customer():
+            queryset = self.get_queryset().filter(reservation__user=self.request.user)
+            context['reviews'] = queryset
         return context
-
-
-def get_context_value(self, context):
-    user_role = self.request.user.profile.role.name
-    if user_role != 'Пользователь':
-        context['is_not_customer'] = True
-    else:
-        context['is_not_customer'] = False

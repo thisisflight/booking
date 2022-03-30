@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.db.models import Prefetch
 from django.utils.safestring import mark_safe
 
 from .models import (Country, City, Hotel, Option,

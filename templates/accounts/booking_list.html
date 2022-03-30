@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load plurals %}
 {% block content %}
     {% include 'inc/_breadcrumb.html' %}
-    <!-- Dashboard starts -->
     <div class="container my-5 py-5">
         <div class="row">
             <div class="col-lg-3">
                 {% include 'inc/_profile_info.html' %}
-                <!-- Responsive Navigation Trigger -->
                 {% include 'inc/_profile_navigation.html' %}
             </div>
             <div class="col-lg-9">
@@ -25,30 +24,35 @@
                                 <th>Дата заезда</th>
                                 <th>Дата отъезда</th>
                                 <th>Моя оценка</th>
-                                <th>Отменить бронь</th>
+                                {% if is_customer %}
+                                    <th>Отменить бронь</th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>Англия</td>
-                                <td>Лондон</td>
-                                <td>Radisson Collection Hotel, 5*</td>
-                                <td>01.01.2001</td>
-                                <td>15.01.2001</td>
-                                <th>4</th>
-                                <th></th>
-                            </tr>
-                            <tr>
-                                <td>Куба</td>
-                                <td>Варадеро</td>
-                                <td>Sol Palmeras Starfish, 4*</td>
-                                <td>01.07.2001</td>
-                                <td>14.07.2001</td>
-                                <th>--</th>
-                                <th>
-                                    <a href="" class="btn btn-sm btn-danger">Отменить</a>
-                                </th>
-                            </tr>
+                            {% for reservation in reservations %}
+                                <tr>
+                                    <td>{{ reservation.hotel.country }}</td>
+                                    <td>{{ reservation.hotel.city }}</td>
+                                    <td>{{ reservation.hotel.name}}, {{ reservation.hotel.category }}*</td>
+                                    <td>{{ reservation.arrival_date }}</td>
+                                    <td>{{ reservation.departure_date }}</td>
+                                    <td>{% get_rate reservation user %}</td>
+                                    {% if is_customer %}
+                                        <td>
+                                            {% if_days_difference_gt_0 reservation.deny as deny %}
+                                            {% if deny %}
+                                                <form action="." method="post">
+                                                    {% csrf_token %}
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-danger">Отменить
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -56,5 +60,4 @@
             </div>
         </div>
     </div>
-    <!-- Dashboard ends -->
 {% endblock %}

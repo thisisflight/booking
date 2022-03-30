@@ -100,7 +100,7 @@
                                                     <p class="card-text">{{ room.description }}</p>
                                                 </div>
                                                 <div class="col-md-4 text-center">
-                                                    {% if room.id in ids %}
+                                                    {% if room.id not in ids %}
                                                         <p class="mb-1 text-danger">На выбранные даты мест нет</p>
                                                     {% elif not arrival_date or not departure_date %}
                                                         <p class="mb-1">
@@ -146,7 +146,7 @@
                                 {% for review in reviews %}
                                     <div class="comment-box">
                                         <div class="comment-image" style="max-width: 150px; max-height: 150px">
-                                            <img src="{{ review.user.profile.avatar.url }}" alt="image">
+                                            <img src="{{ review.reservation.user.profile.avatar.url }}" alt="image">
                                         </div>
                                         <div class="comment-content w-100">
                                             <h5 class="mb-1">{{ review.user.first_name }}</h5>

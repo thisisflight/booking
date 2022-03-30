@@ -97,6 +97,9 @@ class Hotel(models.Model):
     def get_absolute_url(self):
         return reverse('hotels:hotel-detail', kwargs={'pk': self.pk})
 
+    def get_update_url(self):
+        return reverse('hotels:update-hotel', kwargs={'pk': self.pk})
+
     class Meta:
         db_table = 'hotels'
         verbose_name = 'Отель'
@@ -131,6 +134,9 @@ class Room(models.Model):
         verbose_name='Вместимость'
     )
 
+    def get_update_url(self):
+        return reverse('hotels:update-room', kwargs={'pk': self.pk})
+
     def __str__(self):
         return f'{self.type}'
 
@@ -163,6 +169,9 @@ class Reservation(models.Model):
 
     def __str__(self):
         return f"{self.user.username} {self.arrival_date} - {self.departure_date}"
+
+    def get_delete_url(self):
+        return reverse('hotels:delete-reservation', kwargs={'pk': self.pk})
 
     class Meta:
         db_table = 'reservations'

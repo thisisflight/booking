@@ -1,6 +1,34 @@
 from django import forms
 
-from hotels.models import Country, Option
+from hotels.models import Country, Option, Hotel, Room
+from utils.forms import update_fields_widget
+
+
+class HotelForm(forms.ModelForm):
+    class Meta:
+        model = Hotel
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        update_fields_widget(self, self.fields, 'form-control')
+        self.fields['repaired_recently'].widget.attrs['class'] = 'form-checkbox'
+
+
+class RoomCreateForm(forms.ModelForm):
+    class Meta:
+        model = Room
+        fields = '__all__'
+
+
+class RoomUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Room
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        update_fields_widget(self, self.fields, 'form-control')
 
 
 class HotelFilterForm(forms.Form):

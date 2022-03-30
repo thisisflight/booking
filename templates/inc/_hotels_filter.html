@@ -17,8 +17,8 @@
                         {{ form.departure_date }}
                     </div>
                     <div class="col-lg-12">
-                        {{ form.is_available }}
-                        <label class="form-check-label text-white" for="available">
+                        <label class="form-check-label text-white">
+                            {{ form.is_available }}
                             {{ form.is_available.label }}
                         </label>
                     </div>
@@ -44,51 +44,54 @@
                 <div class="form-check">
                     {{ form.five_star_hotel }}
                     <label for="id_star5">
-                                    <span class="star-rating">
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                    </span>
+                        <span class="star-rating">
+                            {% with ''|center:5 as range %}
+                                {% for _ in range %}
+                                    <span class="bi bi-star-fill"></span>
+                                {% endfor %}
+                            {% endwith %}
+                        </span>
                     </label>
                 </div>
                 <div class="form-check">
                     {{ form.four_star_hotel }}
                     <label for="id_star4">
-                                    <span class="star-rating">
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                    </span>
+                        <span class="star-rating">
+                            {% with ''|center:4 as range %}
+                                {% for _ in range %}
+                                    <span class="bi bi-star-fill"></span>
+                                {% endfor %}
+                            {% endwith %}
+                        </span>
                     </label>
                 </div>
                 <div class="form-check">
                     {{ form.three_star_hotel }}
                     <label for="id_star3">
-                                    <span class="star-rating">
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                    </span>
+                        <span class="star-rating">
+                            {% with ''|center:3 as range %}
+                                {% for _ in range %}
+                                    <span class="bi bi-star-fill"></span>
+                                {% endfor %}
+                            {% endwith %}
+                        </span>
                     </label>
                 </div>
                 <div class="form-check">
                     {{ form.two_star_hotel }}
                     <label for="id_star2">
-                                    <span class="star-rating">
-                                        <span class="bi bi-star-fill"></span>
-                                        <span class="bi bi-star-fill"></span>
-                                    </span>
+                        <span class="star-rating">
+                            <span class="bi bi-star-fill"></span>
+                            <span class="bi bi-star-fill"></span>
+                        </span>
                     </label>
                 </div>
                 <div class="form-check">
                     {{ form.one_star_hotel }}
                     <label for="id_star1">
-                                    <span class="star-rating">
-                                        <span class="bi bi-star-fill"></span>
-                                    </span>
+                        <span class="star-rating">
+                            <span class="bi bi-star-fill"></span>
+                        </span>
                     </label>
                 </div>
             </div>

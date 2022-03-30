@@ -28,3 +28,16 @@ def beautify_phone_view(phone_number):
     if len(phone_number) == 11:
         return '+7 ({}{}{}) {}{}{}-{}{}-{}{}'.format(*list(phone_number)[1:])
     return phone_number
+
+
+@register.simple_tag
+def if_days_difference_gt_0(td):
+    days = td.days
+    return True if days > 0 else False
+
+
+@register.simple_tag
+def get_rate(reservation, user):
+    if reservation.user == user and reservation.rate > 0:
+        return reservation.rate
+    return '--'
