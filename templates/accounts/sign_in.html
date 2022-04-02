@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load account %}
+{% load socialaccount %}
 {% block content %}
     {% include 'inc/_breadcrumb.html' with title=title %}
     <!-- hotel detail starts -->
@@ -12,7 +14,7 @@
                         {% csrf_token %}
                         <div class="form-group mb-3">
                             <label for="id_loginemail" class="form-label">Логин или Email</label>
-                            {{ form.username }}
+                            {{ form.login }}
                         </div>
                         <div class="form-group mb-3">
                             <label for="id_password" class="form-label">Пароль</label>
@@ -23,7 +25,7 @@
                             <label class="form-check-label" for="remember_me">
                                 Запомнить меня
                             </label>
-                            <a href="forgot_password.html">Забыли пароль?</a>
+                            <a href="{% url 'accounts:password_reset' %}">Забыли пароль?</a>
                         </div>
                         <div class="form-btn text-center">
                             <button type="submit" class="nir-btn">Войти</button>
@@ -31,8 +33,9 @@
                     </form>
                     <div class="login-social text-center mt-5 mb-2">
                         <p class=""><strong>- или войти через соц.сети -</strong></p>
-                        <a href="#" class="btn-facebook"><i class="bi bi-facebook me-1"></i>Facebook</a>
-                        <a href="#" class="btn-twitter"><i class="bi bi-twitter me-1"></i>Twitter</a>
+                        <a href="{% provider_login_url 'vk' %}" class="btn btn-primary btn-block">
+                            Войти через ВК
+                        </a>
                     </div>
                 </div>
             </div>

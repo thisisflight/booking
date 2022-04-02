@@ -1,8 +1,8 @@
 {% load static %}
 <!-- BreadCrumb Starts -->
-<section class="breadcrumb-main{% if 'user' in request.path or 'create' in request.path or 'update' in request.path %} pb-2{% else %} pb-0 mb-5{% endif %}"
+<section class="breadcrumb-main{% if 'user' in request.path or 'password' in request.path or 'create' in request.path or 'update' in request.path %} pb-2{% else %} pb-0 mb-5{% endif %}"
          style="background-image: url({% static 'images/bg/bg8.jpg' %});">
-    {% if 'user' in request.path or 'create' in request.path or 'update' in request.path %}
+    {% if 'user' in request.path or 'password' in request.path or 'create' in request.path or 'update' in request.path %}
     {% else %}
         <div class="breadcrumb-outer pt-10">
             <div class="container">

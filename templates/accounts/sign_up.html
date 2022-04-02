@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load socialaccount %}
 {% block content %}
     {% include 'inc/_breadcrumb.html' with title=title %}
     <!-- hotel detail starts -->
@@ -32,8 +33,9 @@
                     </form>
                     <div class="login-social text-center mt-5 mb-2">
                         <p class=""><strong>- или войти через соц.сети -</strong></p>
-                        <a href="#" class="btn-facebook"><i class="bi bi-facebook me-1"></i>Facebook</a>
-                        <a href="#" class="btn-twitter"><i class="bi bi-twitter me-1"></i>Twitter</a>
+                        <a href="{% provider_login_url 'vk' %}" class="btn btn-primary btn-block">
+                            Войти через ВК
+                        </a>
                     </div>
                 </div>
             </div>

@@ -1,10 +1,14 @@
 import datetime
 
+from allauth.account.views import LoginView
 from django.contrib.auth import login
 from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin)
 from django.contrib.auth.models import User, Group
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import (PasswordResetView,
+                                       PasswordResetDoneView,
+                                       PasswordResetConfirmView,
+                                       PasswordResetCompleteView)
 from django.db.models import F, ExpressionWrapper, DurationField
 from django.db.models.functions import Coalesce
 from django.shortcuts import redirect
@@ -14,7 +18,8 @@ from django.views.generic import (UpdateView, TemplateView,
 
 from hotels.models import Reservation, Review, Hotel
 from .forms import (ChangeProfileInfoForm, CustomUserCreationForm,
-                    CustomAuthenticationForm)
+                    CustomAuthenticationForm, CustomPasswordResetForm,
+                    CustomSetPasswordForm)
 from .models import Profile
 
 
@@ -76,6 +81,49 @@ class SignInView(LoginView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Вход'
         return context
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'accounts/forgot_password.html'
+    form_class = CustomPasswordResetForm
+    email_template_name = 'accounts/password_reset_email.txt'
+    subject_template_name = 'accounts/password_reset_subject.txt'
+    success_url = reverse_lazy('accounts:password_reset_done')
+    html_email_template_name = 'accounts/password_reset_email.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Восстановление пароля'
+        return context
+
+    def form_valid(self, form):
+        self.request.session['reset_email'] = form.cleaned_data['email']
+        return super().form_valid(form)
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'accounts/forgot_password_done.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reset_email'] = self.request.session.get('reset_email', '')
+        context['title'] = 'Восстановление пароля'
+        return context
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'accounts/password_reset_confirm.html'
+    form_class = CustomSetPasswordForm
+    success_url = reverse_lazy('accounts:password_reset_complete')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Установка нового пароля'
+        return context
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'accounts/password_reset_complete.html'
 
 
 class UserProfileView(LoginRequiredMixin, UpdateView):
