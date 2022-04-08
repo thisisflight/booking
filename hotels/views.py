@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -16,11 +17,16 @@ from .services import processing_dates, processing_get_parameters
 class HotelListView(ListView):
     model = Hotel
     template_name = 'hotels/hotels_list.html'
+    paginate_by = 20
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['title'] = 'Список отелей'
         context['form'] = HotelFilterForm(self.request.GET)
+        is_filter_used = bool(self.request.GET)
+        if is_filter_used:
+            context['query'] = '&'.join(['='.join(item) for item in self.request.GET.items()])
+        context['is_filter_used'] = is_filter_used
         return context
 
     def get_queryset(self):
@@ -106,6 +112,11 @@ class DeleteReservationView(DeleteView):
     model = Reservation
     template_name = 'accounts/booking_list.html'
     success_url = reverse_lazy('accounts:booking-list')
+
+    def form_valid(self, form):
+        messages.success(self.request,
+                         'Вы успешно удалили бронирование')
+        return super().form_valid(form)
 
 
 @permission_required('hotels.add_rooms')

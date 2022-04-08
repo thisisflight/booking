@@ -40,7 +40,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                {% include 'inc/_pagination.html' %}
+                {% include 'inc/_pagination.html' with is_filter_used=is_filter_used query=query %}
             </div>
             {% include 'inc/_hotels_filter.html' with form=form %}
         </div>

@@ -1,6 +1,7 @@
 import datetime
 
 from allauth.account.views import LoginView
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin)
@@ -60,6 +61,9 @@ class SignUpView(CreateView):
         user.email = email
         user.save()
         login(self.request, user=user)
+        messages.success(self.request,
+                         f'Вы зашли как пользователь '
+                         f'{self.request.user.username}')
         return result
 
     def get_context_data(self, **kwargs):
@@ -150,7 +154,13 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
             group.user_set.add(user)
         if any([username, email]):
             user.save()
+        messages.success(self.request, 'Вы успешно обновили профиль')
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request,
+                       'Поправьте некорректные данные и нажмите Сохранить')
+        return super().form_invalid(form)
 
 
 class UserDashboardView(LoginRequiredMixin, PermissionRequiredMixin,
