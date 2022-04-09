@@ -128,13 +128,3 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
-
-
-
-if DEBUG:
-    INSTALLED_APPS.append(
-        'debug_toolbar'
-    )
-    MIDDLEWARE.insert(
-        0, 'debug_toolbar.middleware.DebugToolbarMiddleware'
-    )
