@@ -3,6 +3,7 @@
 {% block content %}
     {% include 'inc/_breadcrumb.html' %}
     <div class="container my-5 py-5">
+    {% include 'inc/_messages.html' %}
         <div class="row">
             <div class="col-lg-3">
                 {% include 'inc/_profile_info.html' %}
@@ -82,7 +83,8 @@
                                             <tr>
                                                 <td>
                                                     <a href="{{ room.get_update_url }}">
-                                                        <img src="{{ room.photo.url }}" alt="" class="w-75">
+                                                        <img src="{{ room.get_photo_url }}" alt=""
+                                                             style="max-width: 150px">
                                                     </a>
                                                 </td>
                                                 <td>{{ room.type }}</td>

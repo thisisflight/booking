@@ -24,7 +24,7 @@ class ReservationInline(admin.StackedInline):
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
     def show_country_photo(self, obj):
-        return mark_safe(f"<img src='{obj.photo.url}' "
+        return mark_safe(f"<img src='{obj.get_photo_url()}' "
                          f"style='max-width: 150px; max-height: 150px;'")
 
     show_country_photo.short_description = 'Фотопревью'
@@ -40,7 +40,7 @@ class CityAdmin(admin.ModelAdmin):
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
     def show_hotel_photo(self, obj):
-        return mark_safe(f"<img src='{obj.photo.url}' "
+        return mark_safe(f"<img src='{obj.get_photo_url()}' "
                          f"style='max-width: 150px; max-height: 150px;'")
 
     show_hotel_photo.short_description = 'Фотопревью'
@@ -58,7 +58,7 @@ class OptionAdmin(admin.ModelAdmin):
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     def show_room_photo(self, obj):
-        return mark_safe(f"<img src='{obj.photo.url}' "
+        return mark_safe(f"<img src='{obj.get_photo_url()}' "
                          f"style='max-width: 150px; max-height: 150px;'")
 
     show_room_photo.short_description = 'Фотопревью'

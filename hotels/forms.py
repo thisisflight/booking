@@ -13,6 +13,9 @@ class HotelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         update_fields_widget(self, self.fields, 'form-control')
         self.fields['repaired_recently'].widget.attrs['class'] = 'form-checkbox'
+        self.fields['category'].widget.attrs.update({'min': 1, 'max': 5})
+        self.fields['category'].initial = 5
+        self.fields['options'].widget.attrs.update({'style': 'height: 150px;'})
 
 
 class RoomCreationForm(forms.ModelForm):

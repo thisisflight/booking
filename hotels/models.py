@@ -1,3 +1,6 @@
+import random
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import (MinValueValidator,
                                     MaxValueValidator)
@@ -15,8 +18,17 @@ class Country(models.Model):
     )
     photo = models.ImageField(
         upload_to='countries',
-        verbose_name='Фото из страны'
+        verbose_name='Фото из страны',
+        null=True, blank=True
     )
+
+    def get_photo_url(self):
+        if self.photo:
+            return self.photo.url
+        else:
+            return (f"{settings.STATIC_URL}images/"
+                    f"destination/destination"
+                    f"{random.choice([x for x in range(3, 10) if x != 6])}.jpg")
 
     def __str__(self):
         return self.name
@@ -67,7 +79,8 @@ class Hotel(models.Model):
     )
     photo = models.ImageField(
         upload_to='hotels',
-        verbose_name='Фотография'
+        verbose_name='Фотография',
+        null=True, blank=True
     )
     category = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
@@ -100,6 +113,13 @@ class Hotel(models.Model):
     def get_update_url(self):
         return reverse('hotels:update-hotel', kwargs={'pk': self.pk})
 
+    def get_photo_url(self):
+        if self.photo:
+            return self.photo.url
+        else:
+            return (f"{settings.STATIC_URL}images/rooms/"
+                    f"list{random.randint(1, 3)}.jpg")
+
     class Meta:
         db_table = 'hotels'
         verbose_name = 'Отель'
@@ -120,7 +140,8 @@ class Room(models.Model):
         max_length=50, choices=ROOM_TYPES, verbose_name='Тип номера'
     )
     photo = models.ImageField(
-        upload_to='rooms', verbose_name='Фотография номера'
+        upload_to='rooms', verbose_name='Фотография номера',
+        null=True, blank=True
     )
     price = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name='Цена'
@@ -138,6 +159,13 @@ class Room(models.Model):
 
     def get_update_url(self):
         return reverse('hotels:update-room', kwargs={'pk': self.pk})
+
+    def get_photo_url(self):
+        if self.photo:
+            return self.photo.url
+        else:
+            return (f"{settings.STATIC_URL}images/rooms/"
+                    f"room{random.randint(1, 3)}.jpg")
 
     def __str__(self):
         return f'{self.type}'

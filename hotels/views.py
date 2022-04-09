@@ -91,8 +91,11 @@ class HotelCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Hotel
     form_class = HotelForm
     template_name = 'hotels/hotel_update.html'
-    success_url = reverse_lazy('accounts:dashboard')
     permission_required = 'hotels.add_hotels'
+
+    def get_success_url(self):
+        messages.success(self.request, 'Отель успешно создан, время создать номера')
+        return reverse('hotels:create-room', kwargs={'pk': self.object.id})
 
 
 class HotelUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -128,6 +131,13 @@ def create_room(request, hotel_pk):
         )
         if formset.is_valid():
             formset.save()
+            messages.success(
+                request,
+                f'Номера успешно добавлены к отелю {hotel.name}')
+            return HttpResponseRedirect(
+                reverse('hotels:update-hotel',
+                        kwargs={'pk': hotel_pk})
+            )
     else:
         formset = RoomFormset(instance=hotel)
     return render(request,

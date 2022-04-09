@@ -44,7 +44,7 @@
             {% for country in countries %}
                 <div class="col-lg-4 col-md-6 p-1">
                     <div class="main-img">
-                        <img src="{{ country.photo.url }}" alt="destination">
+                        <img src="{{ country.get_photo_url }}" alt="destination">
                     </div>
                     <div class="d-flex align-items-center justify-content-between bg-white py-2 px-3">
                         <h4 class="mb-0 navy">{{ country.name }}</h4>
@@ -72,7 +72,7 @@
                     <div class="col-lg-4 col-md-6 p-1">
                         <div class="desti-image">
                             <div class="main-img">
-                                <img src="{{ hotel.photo.url }}" alt="hotel">
+                                <img src="{{ hotel.get_photo_url }}" alt="hotel">
                             </div>
                             <div class="desti-content hotel-content d-flex align-items-center justify-content-between bg-white py-2 px-3">
                                 <div>
