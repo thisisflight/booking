@@ -9,9 +9,10 @@ from django.views.generic import (ListView, DetailView,
 
 from .forms import (HotelFilterForm, HotelForm,
                     RoomCreationForm, RoomFormset,
-                    ReviewForm)
+                    ReviewForm, ReservationForm)
 from .models import Hotel, Review, Reservation, Room
-from .services import processing_dates, processing_get_parameters
+from .services import (processing_dates,
+                       processing_get_parameters, getting_dates)
 
 
 class HotelListView(ListView):
@@ -46,12 +47,23 @@ class HotelDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        previous_link = self.request.META.get('HTTP_REFERER')
         hotel = self.object
+        previous_link = self.request.META.get('HTTP_REFERER')
         rooms = hotel.rooms.all()
         context['rooms'] = rooms
         if previous_link and len(previous_link.split('?')) > 1:
             processing_dates(context, previous_link, rooms)
+            arrival_date, departure_date = getting_dates(context, previous_link)
+            if all([arrival_date, departure_date]):
+                reservation_form = ReservationForm(
+                    initial={
+                        'user': self.request.user,
+                        'hotel': hotel,
+                        'arrival_date': arrival_date,
+                        'departure_date': departure_date
+                    }
+                )
+                context['reservation_form'] = reservation_form
         reviews = Review.objects.select_related('reservation__user')
         reviews = reviews.filter(reservation__hotel=hotel)
         context['title'] = "Бронирование отеля"
@@ -73,8 +85,19 @@ class HotelDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         review_form = ReviewForm(request.POST)
-        if review_form.is_valid():
-            Review.objects.create(**review_form.cleaned_data)
+        reservation_form = ReservationForm(request.POST)
+        if 'review' in request.POST:
+            if review_form.is_valid():
+                Review.objects.create(**review_form.cleaned_data)
+        if 'reserve' in request.POST:
+            if reservation_form.is_valid():
+                Reservation.objects.create(**reservation_form.cleaned_data)
+                messages.success(request, 'Ваше бронирование успешно завершено')
+                return HttpResponseRedirect(
+                    reverse('accounts:booking-list')
+                )
+            else:
+                print(reservation_form.errors)
         return HttpResponseRedirect(
             reverse('hotels:hotel-detail', kwargs={'pk': self.get_object().pk})
         )

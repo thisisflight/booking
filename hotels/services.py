@@ -5,16 +5,7 @@ from django.db.models.functions import Coalesce
 
 
 def processing_dates(context, previous_link, rooms):
-    request_data = dict([item.split('=')
-                         for item in previous_link.split('?')[1].split('&')])
-    arrival_date = request_data.get('arrival_date')
-    if arrival_date:
-        arrival_date = datetime.datetime.strptime(arrival_date, '%Y-%m-%d')
-    departure_date = request_data.get('departure_date')
-    if departure_date:
-        departure_date = datetime.datetime.strptime(departure_date, '%Y-%m-%d')
-    context['arrival_date'] = arrival_date
-    context['departure_date'] = departure_date
+    arrival_date, departure_date = getting_dates(context, previous_link)
     if all([arrival_date, departure_date]):
         reserved_rooms = rooms.filter(
             (
@@ -33,6 +24,20 @@ def processing_dates(context, previous_link, rooms):
         )
         context['ids'] = rooms_ids
         context['rooms_amount'] = len(rooms_ids)
+
+
+def getting_dates(context, previous_link):
+    request_data = dict([item.split('=')
+                         for item in previous_link.split('?')[1].split('&')])
+    arrival_date = request_data.get('arrival_date')
+    if arrival_date:
+        arrival_date = datetime.datetime.strptime(arrival_date, '%Y-%m-%d')
+    departure_date = request_data.get('departure_date')
+    if departure_date:
+        departure_date = datetime.datetime.strptime(departure_date, '%Y-%m-%d')
+    context['arrival_date'] = arrival_date
+    context['departure_date'] = departure_date
+    return arrival_date, departure_date
 
 
 def processing_get_parameters(form, queryset):

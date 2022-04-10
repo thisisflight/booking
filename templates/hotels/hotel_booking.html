@@ -113,7 +113,18 @@
                                                         <p class="mb-1">
                                                             {% separate_integers_with_dotes room.price %} / ночь
                                                         </p>
-                                                        <a href="#" class="nir-btn w-100">Я бронирую</a>
+                                                        <form method="post">
+                                                            {% csrf_token %}
+                                                            {{ reservation_form.user }}
+                                                            {{ reservation_form.hotel }}
+                                                            <select name="room" required hidden id="id_room">
+                                                                <option value="{{ room.id }}" selected>{{ room.type }}</option>
+                                                            </select>
+                                                            {{ reservation_form.arrival_date }}
+                                                            {{ reservation_form.departure_date }}
+                                                            <button type="submit" name="reserve"
+                                                                    class="nir-btn w-100">Я бронирую</button>
+                                                        </form>
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -181,7 +192,8 @@
                                         {{ form.rate }}
                                         <label for="id_text">Текст отзыва:</label>
                                         {{ form.text }}
-                                        <button type="submit" class="btn btn-primary mt-3">Отправить отзыв</button>
+                                        <button type="submit" name="review"
+                                                class="btn btn-primary mt-3">Отправить отзыв</button>
                                     </form>
                                 </div>
                             </div>

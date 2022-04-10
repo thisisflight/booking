@@ -1,6 +1,6 @@
 from django import forms
 
-from hotels.models import Country, Option, Hotel, Room, Review
+from hotels.models import Country, Option, Hotel, Room, Review, Reservation
 from utils.forms import update_fields_widget
 
 
@@ -138,7 +138,29 @@ class ReviewForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        reservation = cleaned_data.get('reservation')
+        user = reservation.user
+        hotel = reservation.hotel
+        reservations = Reservation.objects.filter(
+            hotel=hotel, user=user)
         if Review.objects.filter(
-                user=cleaned_data['user'], hotel=cleaned_data['reservation__hotel']).exists():
+                reservation__in=reservations).exists():
             raise forms.ValidationError(f'Вы уже оставили отзыв на этот отель')
         return cleaned_data
+
+
+class ReservationForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
+        fields = ['user', 'hotel', 'room', 'arrival_date', 'departure_date']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user'].widget = forms.HiddenInput()
+        self.fields['hotel'].widget = forms.HiddenInput()
+        self.fields['arrival_date'].widget = forms.DateInput(
+            format="%Y-%m-%d", attrs={'type': 'hidden'}
+        )
+        self.fields['departure_date'].widget = forms.DateInput(
+            format="%Y-%m-%d", attrs={'type': 'hidden'}
+        )
