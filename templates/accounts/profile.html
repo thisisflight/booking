@@ -38,6 +38,14 @@
                                 {% endautoescape %}
                             </div>
                             <div class="mb-3">
+                                <label for="id_first_name" class="form-label">Имя</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_last_name" class="form-label">Фамилия</label>
+                                {{ form.last_name }}
+                            </div>
+                            <div class="mb-3">
                                 <label for="id_phone" class="form-label">Телефон</label>
                                 {{ form.phone }}
                             </div>

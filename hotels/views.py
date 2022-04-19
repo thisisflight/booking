@@ -12,7 +12,7 @@ from .forms import (HotelFilterForm, HotelForm,
                     ReviewForm, ReservationForm)
 from .models import Hotel, Review, Reservation, Room
 from .services import (processing_dates,
-                       processing_get_parameters, getting_dates)
+                       processing_get_parameters)
 
 
 class HotelListView(ListView):
@@ -30,6 +30,10 @@ class HotelListView(ListView):
         context['is_filter_used'] = is_filter_used
         return context
 
+    def get(self, request, *args, **kwargs):
+        self.request.GET._mutable = True
+        return super().get(request, *args, **kwargs)
+
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.select_related('city', 'country')
@@ -37,7 +41,7 @@ class HotelListView(ListView):
         queryset = queryset.with_cheapest_price_and_average_rate()
         form = HotelFilterForm(self.request.GET)
         if form.is_valid():
-            queryset = processing_get_parameters(form, queryset)
+            queryset = processing_get_parameters(self.request, form, queryset)
         return queryset.order_by('-pk')
 
 
@@ -48,22 +52,20 @@ class HotelDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         hotel = self.object
-        previous_link = self.request.META.get('HTTP_REFERER')
         rooms = hotel.rooms.all()
         context['rooms'] = rooms
-        if previous_link and len(previous_link.split('?')) > 1:
-            processing_dates(context, previous_link, rooms)
-            arrival_date, departure_date = getting_dates(context, previous_link)
-            if all([arrival_date, departure_date]):
-                reservation_form = ReservationForm(
-                    initial={
-                        'user': self.request.user,
-                        'hotel': hotel,
-                        'arrival_date': arrival_date,
-                        'departure_date': departure_date
-                    }
-                )
-                context['reservation_form'] = reservation_form
+        arrival_date, departure_date = processing_dates(
+            self.request, context, rooms)
+        if all([arrival_date, departure_date]):
+            reservation_form = ReservationForm(
+                initial={
+                    'user': self.request.user,
+                    'hotel': hotel,
+                    'arrival_date': arrival_date,
+                    'departure_date': departure_date
+                }
+            )
+            context['reservation_form'] = reservation_form
         reviews = Review.objects.select_related('reservation__user')
         reviews = reviews.filter(reservation__hotel=hotel)
         context['title'] = "Бронирование отеля"
@@ -96,8 +98,6 @@ class HotelDetailView(DetailView):
                 return HttpResponseRedirect(
                     reverse('accounts:booking-list')
                 )
-            else:
-                print(reservation_form.errors)
         return HttpResponseRedirect(
             reverse('hotels:hotel-detail', kwargs={'pk': self.get_object().pk})
         )
@@ -118,7 +118,7 @@ class HotelCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, 'Отель успешно создан, время создать номера')
-        return reverse('hotels:create-room', kwargs={'pk': self.object.id})
+        return reverse('hotels:create-room', kwargs={'hotel_pk': self.object.id})
 
 
 class HotelUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):

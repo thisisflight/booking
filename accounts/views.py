@@ -60,7 +60,9 @@ class SignUpView(CreateView):
         user = User.objects.get(username=username)
         user.email = email
         user.save()
-        login(self.request, user=user)
+        login(
+            self.request, user=user,
+            backend="django.contrib.auth.backends.ModelBackend")
         messages.success(self.request,
                          f'Вы зашли как пользователь '
                          f'{self.request.user.username}')
@@ -144,15 +146,21 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
         username = form.cleaned_data.get('username')
         email = form.cleaned_data.get('email')
         role = form.cleaned_data.get('role')
+        first_name = form.cleaned_data.get('first_name')
+        last_name = form.cleaned_data.get('last_name')
         if username:
             user.username = username
         if email:
             user.email = email
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
         if role:
             group = Group.objects.get(name__exact=role)
             user.groups.clear()
             group.user_set.add(user)
-        if any([username, email]):
+        if any([username, email, first_name, last_name]):
             user.save()
         messages.success(self.request, 'Вы успешно обновили профиль')
         return super().form_valid(form)

@@ -72,6 +72,16 @@ class ChangeProfileInfoForm(forms.ModelForm):
         widget=forms.EmailInput(
             attrs={'placeholder': 'Введите новый адрес электронной почты'}),
     )
+    first_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Введите имя'}
+        )
+    )
+    last_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Введите фамилию'}
+        )
+    )
 
     class Meta:
         model = Profile

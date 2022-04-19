@@ -4,14 +4,21 @@ from django.views.generic import TemplateView
 
 from hotels.forms import HotelFilterForm
 from hotels.models import Country, Hotel, Review
+from utils.form_dates import reconfigure_form_dates
 
 
 class MainPage(TemplateView):
     template_name = 'index.html'
 
     def get(self, request, *args, **kwargs):
-        arrival_date = request.GET.get('arrival_date')
-        departure_date = request.GET.get('departure_date')
+        self.request.GET._mutable = True
+        arrival_date, departure_date = reconfigure_form_dates(
+            self.request,
+            self.request.GET.get('arrival_date'),
+            self.request.GET.get('departure_date')
+        )
+        self.request.session['arrival_date'] = arrival_date
+        self.request.session['departure_date'] = departure_date
         capacity = request.GET.get('capacity')
         link = reverse_lazy('hotels:hotels-list')
         search = True if request.GET.get('search') == '1' else False
