@@ -1,11 +1,15 @@
 import datetime
+from typing import Tuple, Any
 
-from django.db.models import Q, Count, Value, F
+from django.db.models import Q, Count, Value, F, QuerySet
 from django.db.models.functions import Coalesce
 
+from utils.form_dates import reconfigure_form_dates
 
-def processing_dates(context, previous_link, rooms):
-    arrival_date, departure_date = getting_dates(context, previous_link)
+
+def processing_dates(request, context, rooms: QuerySet) -> Tuple[datetime.datetime, Any]:
+    """Фильтрация списка комнат, исходя из введённых пользователем дат"""
+    arrival_date, departure_date = getting_dates(request, context)
     if all([arrival_date, departure_date]):
         reserved_rooms = rooms.filter(
             (
@@ -24,15 +28,15 @@ def processing_dates(context, previous_link, rooms):
         )
         context['ids'] = rooms_ids
         context['rooms_amount'] = len(rooms_ids)
+    return arrival_date, departure_date
 
 
-def getting_dates(context, previous_link):
-    request_data = dict([item.split('=')
-                         for item in previous_link.split('?')[1].split('&')])
-    arrival_date = request_data.get('arrival_date')
+def getting_dates(request, context):
+    """Получение дат из сессии, реконфиг из строки в datetime object и запись в контекст"""
+    arrival_date = request.session.get('arrival_date')
+    departure_date = request.session.get('departure_date')
     if arrival_date:
         arrival_date = datetime.datetime.strptime(arrival_date, '%Y-%m-%d')
-    departure_date = request_data.get('departure_date')
     if departure_date:
         departure_date = datetime.datetime.strptime(departure_date, '%Y-%m-%d')
     context['arrival_date'] = arrival_date
@@ -40,10 +44,18 @@ def getting_dates(context, previous_link):
     return arrival_date, departure_date
 
 
-def processing_get_parameters(form, queryset):
+def processing_get_parameters(request, form, queryset):
+    """Фильтрация кверисета по GET запросу формы с фильтрами"""
     country = form.cleaned_data.get('country')
     arrival_date = form.cleaned_data.get('arrival_date')
     departure_date = form.cleaned_data.get('departure_date')
+    arrival_date, departure_date = reconfigure_form_dates(
+        request,
+        datetime.datetime.strftime(arrival_date, "%Y-%m-%d") if arrival_date else None,
+        datetime.datetime.strftime(departure_date, "%Y-%m-%d") if departure_date else None
+    )
+    request.session['arrival_date'] = arrival_date
+    request.session['departure_date'] = departure_date
     min_price = form.cleaned_data.get('min_price')
     max_price = form.cleaned_data.get('max_price')
     capacity = form.cleaned_data.get('capacity')

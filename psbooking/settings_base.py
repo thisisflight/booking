@@ -95,6 +95,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'assets'
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -128,3 +130,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
+
+
+handler403 = "psbooking.views.page_permission_denied_view"
+handler404 = "psbooking.views.page_not_found_view"
+handler500 = "psbooking.views.page_server_error_view"
