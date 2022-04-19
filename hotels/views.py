@@ -94,7 +94,7 @@ class HotelDetailView(DetailView):
         if 'reserve' in request.POST:
             if reservation_form.is_valid():
                 Reservation.objects.create(**reservation_form.cleaned_data)
-                messages.success(request, 'Ваше бронирование успешно завершено')
+                messages.success(request, 'Вы успешно забронировали номер')
                 return HttpResponseRedirect(
                     reverse('accounts:booking-list')
                 )
@@ -134,15 +134,13 @@ class HotelUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         return context
 
 
-class DeleteReservationView(DeleteView):
+class DeleteReservationView(LoginRequiredMixin, DeleteView):
     model = Reservation
     template_name = 'accounts/booking_list.html'
-    success_url = reverse_lazy('accounts:booking-list')
 
-    def form_valid(self, form):
-        messages.success(self.request,
-                         'Вы успешно удалили бронирование')
-        return super().form_valid(form)
+    def get_success_url(self):
+        messages.success(self.request, f'Бронирование успешно удалено')
+        return reverse('accounts:booking-list')
 
 
 @permission_required('hotels.add_rooms')

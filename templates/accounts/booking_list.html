@@ -43,7 +43,7 @@
                                         <td>
                                             {% if_days_difference_gt_0 reservation.deny as deny %}
                                             {% if deny %}
-                                                <form action="." method="post">
+                                                <form action="{{ reservation.get_delete_url }}" method="post">
                                                     {% csrf_token %}
                                                     <button type="submit"
                                                             class="btn btn-sm btn-danger">Отменить
