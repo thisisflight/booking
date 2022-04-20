@@ -19,7 +19,7 @@ from .services import (processing_dates,
 class HotelListView(ListView):
     model = Hotel
     template_name = 'hotels/hotels_list.html'
-    paginate_by = 20
+    paginate_by = 8
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
