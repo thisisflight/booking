@@ -10,15 +10,24 @@
             <div class="col-auto mb-4">
                 <div class="login-content border p-4">
                     <h4 class="">Вход на PS-Booking</h4>
+                    {% autoescape off %}
+                        {{ form.non_field_errors }}
+                    {% endautoescape %}
                     <form action="." method="post">
                         {% csrf_token %}
                         <div class="form-group mb-3">
                             <label for="id_loginemail" class="form-label">Логин или Email</label>
                             {{ form.login }}
+                            {% autoescape off %}
+                                {{ form.login.errors }}
+                            {% endautoescape %}
                         </div>
                         <div class="form-group mb-3">
                             <label for="id_password" class="form-label">Пароль</label>
                             {{ form.password }}
+                            {% autoescape off %}
+                                {{ form.password.errors }}
+                            {% endautoescape %}
                         </div>
                         <div class="form-group form-checkbox text-center mb-1">
                             <input class="form-check-input" type="checkbox" value="" id="remember_me">
@@ -28,6 +37,7 @@
                             <a href="{% url 'accounts:password_reset' %}">Забыли пароль?</a>
                         </div>
                         <div class="form-btn text-center">
+                            <input type="hidden" name="next" value="{{ request.GET.next }}"/>
                             <button type="submit" class="nir-btn">Войти</button>
                         </div>
                     </form>

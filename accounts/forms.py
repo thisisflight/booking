@@ -10,21 +10,41 @@ from utils.forms import update_fields_widget, set_required_false_to_fields
 from .models import Profile
 
 
+class CustomErrorList(ErrorList):
+    def __str__(self):
+        return self.as_divs()
+
+    def as_divs(self):
+        if not self:
+            return ''
+        return '<div class="errorlist">%s</div>' % ''.join(['<div style="color: red">%s</div>' % e for e in self])
+
+
 class CustomUserCreationForm(UserCreationForm):
     email = forms.CharField(
         widget=forms.EmailInput
     )
 
     def __init__(self, *args, **kwargs):
+        kwargs.update({'error_class': CustomErrorList})
         super().__init__(*args, **kwargs)
         update_fields_widget(self,
                              ('username', 'email', 'password1', 'password2'),
                              'form-control')
 
+    def clean(self):
+        cleaned_data = super().clean()
+        email_to_check = cleaned_data.get('email')
+        email_queryset = User.objects.filter(email__exact=email_to_check).exists()
+        if email_queryset:
+            raise ValidationError('Пользователь с такой почтой уже существует')
+        return cleaned_data
+
 
 class CustomAuthenticationForm(LoginForm):
 
     def __init__(self, *args, **kwargs):
+        kwargs.update({'error_class': CustomErrorList})
         super().__init__(*args, **kwargs)
         update_fields_widget(self, ('login', 'password'), 'form-control')
 
@@ -50,16 +70,6 @@ class CustomSetPasswordForm(SetPasswordForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         update_fields_widget(self, ('new_password1', 'new_password2',), 'form-control')
-
-
-class CustomErrorList(ErrorList):
-    def __str__(self):
-        return self.as_divs()
-
-    def as_divs(self):
-        if not self:
-            return ''
-        return '<div class="errorlist">%s</div>' % ''.join(['<div style="color: red">%s</div>' % e for e in self])
 
 
 class ChangeProfileInfoForm(forms.ModelForm):
