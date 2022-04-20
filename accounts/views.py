@@ -212,20 +212,21 @@ class ReservationListView(LoginRequiredMixin, CheckCustomerMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
         if self.check_if_user_is_customer():
-            queryset = self.get_queryset().filter(user=self.request.user)
-            reservations_with_rates = Counter()
-            for item in queryset:
-                reservations_with_rates[item.hotel.id] += item.rate
-            context["reservations_dict"] = dict(reservations_with_rates)
+            context['is_customer'] = True
+            queryset = queryset.filter(user=self.request.user)
             queryset = queryset.annotate(
                 deny=ExpressionWrapper(
                     F('departure_date') - datetime.date.today(),
                     output_field=DurationField()
                 )
             )
-            context['is_customer'] = True
-            context['reservations'] = queryset
+        reservations_with_rates = Counter()
+        for item in queryset:
+            reservations_with_rates[item.hotel.id] += item.rate
+        context["reservations_dict"] = dict(reservations_with_rates)
+        context['reservations'] = queryset
         return context
 
 
