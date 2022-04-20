@@ -12,10 +12,9 @@ class MainPage(TemplateView):
 
     def get(self, request, *args, **kwargs):
         self.request.GET._mutable = True
-        arrival_date, departure_date = reconfigure_form_dates(
-            self.request,
-            self.request.GET.get('arrival_date'),
-            self.request.GET.get('departure_date')
+        arrival_date, departure_date = (
+            reconfigure_form_dates(request.GET, self.request.GET.get('arrival_date'),
+                                   self.request.GET.get('departure_date'))
         )
         self.request.session['arrival_date'] = arrival_date
         self.request.session['departure_date'] = departure_date

@@ -74,7 +74,9 @@
                                 <div class="col-md-3 text-center">
                                     <h5>Доступность</h5>
                                     {% if rooms_amount %}
-                                        <h6 class="text-success"><i class="bi bi-calendar-check me-2"></i>Есть места</h6>
+                                        <h6 class="{% if delta %} text-success {% else %} text-danger {% endif %}">
+                                            <i class="bi bi-calendar-check me-2">
+                                            </i>{% if delta %} Есть места {% else %} Эти даты уже прошли {% endif %}</h6>
                                     {% elif not arrival_date or not departure_date %}
                                         <h6 class="text-secondary">Выберите даты</h6>
                                     {% else %}
@@ -102,13 +104,15 @@
                                                 <div class="col-md-4 text-center">
                                                     {% if room.id not in ids %}
                                                         <p class="mb-1 text-danger">На выбранные даты мест нет</p>
-                                                    {% elif not arrival_date or not departure_date %}
+                                                    {% elif not arrival_date or not departure_date or not delta %}
                                                         <p class="mb-1">
                                                             {% separate_integers_with_dotes room.price %} / ночь
                                                         </p>
-                                                        <a href="{% url 'main:index' %}" class="btn btn-outline-secondary">
+                                                        <button type="button"
+                                                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"
+                                                                class="btn btn-outline-secondary">
                                                             Указать даты поездки
-                                                        </a>
+                                                        </button>
                                                     {% else %}
                                                         <p class="mb-1">
                                                             {% separate_integers_with_dotes room.price %} / ночь
@@ -160,7 +164,8 @@
                                             <img src="{{ review.reservation.user.profile.get_avatar_url }}" alt="image">
                                         </div>
                                         <div class="comment-content w-100">
-                                            <h5 class="mb-1">{{ review.reservation.user.first_name }}</h5>
+                                            <h5 class="mb-1">{{ review.reservation.user.first_name }}
+                                            {{ review.reservation.user.last_name }}</h5>
                                             <p class="comment-date">{{ review.created|date:"d E Y" }}</p>
                                             <div class="comment-rate">
                                                 <div class="rating mar-right-15">
@@ -182,7 +187,7 @@
                     </div>
                     <div class="my-4">
                         {% if user.is_authenticated and form %}
-                            <h4>Оставить отзыв</h4>
+                            <h4>Оставьте отзыв об отеле {{ hotel.name }}</h4>
                             <div class="my-4 card border-0 shadow">
                                 <div class="card-body">
                                     <form method="post">
@@ -211,4 +216,35 @@
         </div>
     </div>
     <!-- hotel detail Ends -->
+    <form action="." method="post" id="form">
+        {% csrf_token %}
+        <div class="modal fade show"
+             id="exampleModalCenter" tabindex="-1"
+             aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Укажите даты</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="form-content w-100">
+                        <h3 class="form-title text-center d-inline white">Найти отель</h3>
+                        <div class="d-lg-flex align-items-end" style="flex-direction: column; padding: 12px">
+                            <div class="form-group pr-4 m-0">
+                                <label for="check_in">Заезд:</label>
+                                {{ dates_form.arrival_date }}
+                            </div>
+                            <div class="form-group pr-4 m-0">
+                                <label for="check_out">Отъезд:</label>
+                                {{ dates_form.departure_date }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" name="dates">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock %}

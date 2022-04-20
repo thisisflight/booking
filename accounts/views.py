@@ -1,4 +1,5 @@
 import datetime
+from collections import Counter
 
 from allauth.account.views import LoginView
 from django.contrib import messages
@@ -213,6 +214,10 @@ class ReservationListView(LoginRequiredMixin, CheckCustomerMixin, ListView):
         context = super().get_context_data(**kwargs)
         if self.check_if_user_is_customer():
             queryset = self.get_queryset().filter(user=self.request.user)
+            reservations_with_rates = Counter()
+            for item in queryset:
+                reservations_with_rates[item.hotel.id] += item.rate
+            context["reservations_dict"] = dict(reservations_with_rates)
             queryset = queryset.annotate(
                 deny=ExpressionWrapper(
                     F('departure_date') - datetime.date.today(),

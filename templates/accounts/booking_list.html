@@ -38,7 +38,7 @@
                                     <td>{{ reservation.hotel.name}}, {{ reservation.hotel.category }}*</td>
                                     <td>{{ reservation.arrival_date }}</td>
                                     <td>{{ reservation.departure_date }}</td>
-                                    <td>{% get_rate reservation user %}</td>
+                                    <td>{% get_rate reservations_dict reservation.hotel.id %}</td>
                                     {% if is_customer %}
                                         <td>
                                             {% if_days_difference_gt_0 reservation.deny as deny %}

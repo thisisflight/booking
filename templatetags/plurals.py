@@ -35,7 +35,6 @@ def if_days_difference_gt_0(td):
 
 
 @register.simple_tag
-def get_rate(reservation, user):
-    if reservation.user == user and reservation.rate > 0:
-        return reservation.rate
-    return '--'
+def get_rate(hotels_id_dict, hotel_id):
+    rate = hotels_id_dict.get(hotel_id)
+    return rate if rate else "--"

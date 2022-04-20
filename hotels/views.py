@@ -3,10 +3,11 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.views.generic import (ListView, DetailView,
                                   CreateView, UpdateView, DeleteView)
 
+from utils.form_dates import reconfigure_form_dates
 from .forms import (HotelFilterForm, HotelForm,
                     RoomCreationForm, RoomFormset,
                     ReviewForm, ReservationForm)
@@ -56,7 +57,7 @@ class HotelDetailView(DetailView):
         context['rooms'] = rooms
         arrival_date, departure_date = processing_dates(
             self.request, context, rooms)
-        if all([arrival_date, departure_date]):
+        if all([arrival_date, departure_date]) :
             reservation_form = ReservationForm(
                 initial={
                     'user': self.request.user,
@@ -66,7 +67,14 @@ class HotelDetailView(DetailView):
                 }
             )
             context['reservation_form'] = reservation_form
-        reviews = Review.objects.select_related('reservation__user')
+        dates_form = HotelFilterForm(self.request.POST)
+        context['dates_form'] = dates_form
+        reviews = Review.objects.select_related('reservation__user').only(
+            "reservation__user__first_name",
+            "reservation__user__last_name",
+            "rate",
+            "created"
+        )
         reviews = reviews.filter(reservation__hotel=hotel)
         context['title'] = "Бронирование отеля"
         context['options'] = hotel.options.all()
@@ -86,18 +94,35 @@ class HotelDetailView(DetailView):
                     context['form'] = ReviewForm(initial={'reservation': reserve})
 
     def post(self, request, *args, **kwargs):
+        request.POST._mutable = True
         review_form = ReviewForm(request.POST)
         reservation_form = ReservationForm(request.POST)
         if 'review' in request.POST:
             if review_form.is_valid():
                 Review.objects.create(**review_form.cleaned_data)
-        if 'reserve' in request.POST:
+        elif 'reserve' in request.POST:
             if reservation_form.is_valid():
                 Reservation.objects.create(**reservation_form.cleaned_data)
                 messages.success(request, 'Вы успешно забронировали номер')
                 return HttpResponseRedirect(
                     reverse('accounts:booking-list')
                 )
+            else:
+                login_url = reverse("accounts:sign-in")
+                self_object_page_url = reverse(
+                    'hotels:hotel-detail', kwargs={'pk': self.get_object().pk}
+                )
+                return HttpResponseRedirect(f"{login_url}?next={self_object_page_url}")
+        elif 'dates' in request.POST:
+            arrival_date = request.POST.get('arrival_date')
+            departure_date = request.POST.get('departure_date')
+            arrival_date, departure_date = (
+                reconfigure_form_dates(
+                    request.POST,
+                    arrival_date, departure_date))
+            request.session['arrival_date'] = arrival_date
+            request.session['departure_date'] = departure_date
+        request.POST._mutable = False
         return HttpResponseRedirect(
             reverse('hotels:hotel-detail', kwargs={'pk': self.get_object().pk})
         )

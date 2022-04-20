@@ -39,6 +39,8 @@ def getting_dates(request, context):
         arrival_date = datetime.datetime.strptime(arrival_date, '%Y-%m-%d')
     if departure_date:
         departure_date = datetime.datetime.strptime(departure_date, '%Y-%m-%d')
+        delta = (departure_date - datetime.datetime.today()).days
+        context['delta'] = delta > 0
     context['arrival_date'] = arrival_date
     context['departure_date'] = departure_date
     return arrival_date, departure_date
@@ -49,10 +51,11 @@ def processing_get_parameters(request, form, queryset):
     country = form.cleaned_data.get('country')
     arrival_date = form.cleaned_data.get('arrival_date')
     departure_date = form.cleaned_data.get('departure_date')
-    arrival_date, departure_date = reconfigure_form_dates(
-        request,
-        datetime.datetime.strftime(arrival_date, "%Y-%m-%d") if arrival_date else None,
-        datetime.datetime.strftime(departure_date, "%Y-%m-%d") if departure_date else None
+    arrival_date, departure_date = (
+        reconfigure_form_dates(
+            request.GET,
+            datetime.datetime.strftime(arrival_date, "%Y-%m-%d") if arrival_date else None,
+            datetime.datetime.strftime(departure_date, "%Y-%m-%d") if departure_date else None)
     )
     request.session['arrival_date'] = arrival_date
     request.session['departure_date'] = departure_date
@@ -84,14 +87,14 @@ def processing_get_parameters(request, form, queryset):
             total_rooms=Coalesce(Count('rooms', distinct=True), Value(0))
         )
         filter_reserved_rooms = (
-         Q(rooms__reservations__arrival_date__gte=arrival_date) &
-         Q(rooms__reservations__arrival_date__lte=departure_date)
+                                        Q(rooms__reservations__arrival_date__gte=arrival_date) &
+                                        Q(rooms__reservations__arrival_date__lte=departure_date)
                                 ) | (
-         Q(rooms__reservations__departure_date__gte=arrival_date) &
-         Q(rooms__reservations__departure_date__lte=departure_date)
+                                        Q(rooms__reservations__departure_date__gte=arrival_date) &
+                                        Q(rooms__reservations__departure_date__lte=departure_date)
                                 ) | (
-         Q(rooms__reservations__arrival_date__lte=arrival_date) &
-         Q(rooms__reservations__departure_date__gte=departure_date)
+                                        Q(rooms__reservations__arrival_date__lte=arrival_date) &
+                                        Q(rooms__reservations__departure_date__gte=departure_date)
                                 )
         queryset = queryset.annotate(reserved_rooms=Coalesce(Count(
             'rooms', distinct=True, filter=filter_reserved_rooms), Value(0)))
