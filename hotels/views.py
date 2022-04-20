@@ -139,7 +139,7 @@ class HotelCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Hotel
     form_class = HotelForm
     template_name = 'hotels/hotel_update.html'
-    permission_required = 'hotels.add_hotels'
+    permission_required = 'hotels.add_hotel'
 
     def get_success_url(self):
         messages.success(self.request, 'Отель успешно создан, время создать номера')
@@ -150,7 +150,7 @@ class HotelUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Hotel
     form_class = HotelForm
     template_name = 'hotels/hotel_update.html'
-    permission_required = 'hotels.change_hotels'
+    permission_required = 'hotels.change_hotel'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -168,7 +168,7 @@ class DeleteReservationView(LoginRequiredMixin, DeleteView):
         return reverse('accounts:booking-list')
 
 
-@permission_required('hotels.add_rooms')
+@permission_required('hotels.add_room')
 def create_room(request, hotel_pk):
     hotel = get_object_or_404(Hotel, pk=hotel_pk)
     if request.method == 'POST':
@@ -195,7 +195,7 @@ class RoomUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Room
     form_class = RoomCreationForm
     template_name = 'hotels/room_update.html'
-    permission_required = 'hotels.change_rooms'
+    permission_required = 'hotels.change_room'
 
     def get_queryset(self):
         queryset = super().get_queryset()

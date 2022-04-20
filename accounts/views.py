@@ -140,6 +140,7 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('accounts:profile')
 
     def get_object(self, queryset=None):
+        print(self.request.user.groups)
         return self.request.user.profile
 
     def form_valid(self, form):
@@ -175,7 +176,7 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
 class UserDashboardView(LoginRequiredMixin, PermissionRequiredMixin,
                         CheckCustomerMixin, TemplateView):
     template_name = 'accounts/dashboard.html'
-    permission_required = 'hotels.add_hotels'
+    permission_required = 'hotels.add_hotel'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
