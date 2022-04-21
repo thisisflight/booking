@@ -3,14 +3,16 @@
 {% block content %}
     {% include 'inc/_breadcrumb.html' %}
     <div class="container my-5 py-5">
-    {% include 'inc/_messages.html' %}
+        {% include 'inc/_messages.html' %}
         <div class="row">
             <div class="col-lg-3">
                 {% include 'inc/_profile_info.html' %}
                 {% include 'inc/_profile_navigation.html' %}
             </div>
             <div class="col-lg-9">
-                {{ formset.non_form_errors }}
+                {% autoescape off %}
+                    {{ formset.non_form_errors }}
+                {% endautoescape %}
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ formset.management_form }}

@@ -1,6 +1,7 @@
 from django import forms
 
 from hotels.models import Country, Option, Hotel, Room, Review, Reservation
+from utils.errors import CustomErrorList
 from utils.forms import update_fields_widget
 
 
@@ -25,6 +26,7 @@ class RoomCreationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        kwargs.update({'error_class': CustomErrorList})
         update_fields_widget(self, self.fields, 'form-control')
 
 
