@@ -35,11 +35,12 @@ def getting_dates(request, context):
     """Получение дат из сессии, реконфиг из строки в datetime object и запись в контекст"""
     arrival_date = request.session.get('arrival_date')
     departure_date = request.session.get('departure_date')
+    today = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
     if arrival_date:
         arrival_date = datetime.datetime.strptime(arrival_date, '%Y-%m-%d')
     if departure_date:
         departure_date = datetime.datetime.strptime(departure_date, '%Y-%m-%d')
-        delta = (departure_date - datetime.datetime.today()).days
+        delta = (departure_date - datetime.datetime.strptime(today, "%Y-%m-%d")).days
         context['delta'] = delta > 0
     context['arrival_date'] = arrival_date
     context['departure_date'] = departure_date
