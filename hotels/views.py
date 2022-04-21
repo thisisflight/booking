@@ -19,7 +19,7 @@ from .services import (processing_dates,
 class HotelListView(ListView):
     model = Hotel
     template_name = 'hotels/hotels_list.html'
-    paginate_by = 8
+    paginate_by = 6
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -27,7 +27,9 @@ class HotelListView(ListView):
         context['form'] = HotelFilterForm(self.request.GET)
         is_filter_used = bool(self.request.GET)
         if is_filter_used:
-            context['query'] = '&'.join(['='.join(item) for item in self.request.GET.items()])
+            query = '&'.join([value for item in self.request.GET.items()
+                              if 'page' not in (value := '='.join(item))])
+            context['query'] = query
         context['is_filter_used'] = is_filter_used
         return context
 

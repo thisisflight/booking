@@ -1,6 +1,8 @@
 {% if is_paginated %}
-<ul class="pagination">
-    <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+<ul class="pagination mt-2">
+    <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+        <a class="page-link" href="?page=1">&laquo;</a>
+    </li>
 
     {% if page_obj.has_previous %}
     <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a></li>
@@ -13,9 +15,15 @@
     {% endfor %}
 
     {% if page_obj.has_next %}
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая</a></li>
+    <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.next_page_number }}
+            ">Следующая</a>
+    </li>
     {% endif %}
 
-    <li class="page-item"><a class="page-link" href="?page={{ paginator.num_pages }}">&raquo;</a></li>
+    <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+        <a class="page-link" href="?page={{ paginator.num_pages }}">&raquo;</a>
+    </li>
 </ul>
 {% endif %}
