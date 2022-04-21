@@ -44,12 +44,15 @@ class MainPage(TemplateView):
         hotels = Hotel.objects.select_related('city').prefetch_related('reservations__reviews')
         hotels = hotels.with_cheapest_price_and_average_rate()
         hotels = hotels.only('name', 'city', 'photo').order_by('min_price')[:3]
-        reviews = Review.objects.select_related('reservation__user__profile')
+        reviews = Review.objects.select_related(
+            'reservation__user__profile', 'reservation__hotel'
+        )
         reviews = reviews.only(
             'updated',
             'text',
             'reservation__user__first_name',
-            'reservation__user__last_name'
+            'reservation__user__last_name',
+            'reservation__hotel__name'
         ).order_by('-pk')[:3]
         context['flag'] = True
         context['main'] = True

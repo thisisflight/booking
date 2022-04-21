@@ -51,7 +51,7 @@
                         <h4 class="mb-0 pink">от {% separate_integers_with_dotes country.min_price %}</h4>
                     </div>
                     <a href="{% url 'hotels:hotels-list' %}?country={{ country.pk }}" class="nir-btn">
-                        <span class="white">Бронировать</span>
+                        <span class="white">Посмотреть</span>
                         <i class="bi bi-caret-right-fill text-white"></i>
                     </a>
                 </div>
@@ -98,7 +98,12 @@
                         </div>
                     </div>
                 {% endfor %}
-
+                <a href="{% url 'hotels:hotels-list' %}" class="btn-info mt-3"
+                   style="display: block; margin: 0 auto; max-width: 200px; background-color: transparent;
+                    outline: 6px solid #ffffff1a; text-align: center; color: #F56961; padding: 10px 20px;
+                    font-weight: bolder; font-size: 18px">
+                    Посмотреть ещё
+                </a>
             </div>
         </div>
     </section>
@@ -109,16 +114,25 @@
         <div class="container">
             <div class="text-center mb-5 pb-2 w-50 mx-auto">
                 <h4 class="mb-0">Отзывы</h4>
-                <h2 class="m-0">Что <span class="pink">о нас говорят</span></h2>
+                <h2 class="m-0">Что <span class="pink">говорят люди</span></h2>
             </div>
             <div class="row">
                 {% for review in reviews %}
                     <div class="col-sm-12">
                         <div class="testimonial-item1">
                             <div class="author-info mb-2">
-                                <img src="{{ review.reservation.user.profile.get_avatar_url }}" alt="user">
-                                <h4 class="my-1 pink">{{ review.reservation.user.first_name}}
-                                    {{ review.reservation.user.last_name }}</h4>
+                                <img
+                                        src="{{ review.reservation.user.profile.get_avatar_url }}"
+                                        style="object-fit: cover" alt="user">
+                                <span class="my-1 pink" style="display: block; font-size: 18px; font-weight: bolder">{{ review.reservation.user.first_name}}
+                                    {{ review.reservation.user.last_name }}
+                                    <span style="color: #777"> об отеле </span>
+                                    <span>
+                                        <a style="display: inline" href="{{ review.reservation.hotel.get_absolute_url }}">
+                                        {{ review.reservation.hotel.name }}
+                                    </a>
+                                    </span>
+                                </span>
                                 <p class="my-0">{{ review.updated|date:"d E Y"}}</p>
                             </div>
                             <div class="details d-flex justify-content-between">
