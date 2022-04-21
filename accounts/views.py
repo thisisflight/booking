@@ -209,7 +209,7 @@ class ReservationListView(LoginRequiredMixin, CheckCustomerMixin, ListView):
         queryset = queryset.annotate(
             rate=Coalesce('reviews__rate', 0)
         )
-        return queryset
+        return queryset.order_by('departure_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
