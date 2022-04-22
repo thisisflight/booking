@@ -31,6 +31,7 @@ class HotelListView(ListView):
                               if 'page' not in (value := '='.join(item))])
             context['query'] = query
         context['is_filter_used'] = is_filter_used
+        context['hotels_amount'] = self.request.session.get('hotels_amount')
         return context
 
     def get(self, request, *args, **kwargs):
@@ -45,7 +46,9 @@ class HotelListView(ListView):
         form = HotelFilterForm(self.request.GET)
         if form.is_valid():
             queryset = processing_get_parameters(self.request, form, queryset)
-        return queryset.order_by('-pk')
+        self.request.session['hotels_amount'] = str(len(queryset))
+        self.request.session.modified = True
+        return queryset
 
 
 class HotelDetailView(DetailView):

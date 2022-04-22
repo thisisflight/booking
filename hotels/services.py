@@ -1,7 +1,7 @@
 import datetime
 from typing import Tuple, Any
 
-from django.db.models import Q, Count, Value, F, QuerySet
+from django.db.models import Q, Count, Value, F, QuerySet, IntegerField
 from django.db.models.functions import Coalesce
 
 from utils.form_dates import reconfigure_form_dates
@@ -64,6 +64,7 @@ def processing_get_parameters(request, form, queryset):
     max_price = form.cleaned_data.get('max_price')
     capacity = form.cleaned_data.get('capacity')
     is_available = form.cleaned_data.get('is_available')
+    sort_key = form.cleaned_data.get('price_sort_key')
     stars_list = []
     five_star = form.cleaned_data.get('five_star_hotel')
     if five_star:
@@ -103,6 +104,10 @@ def processing_get_parameters(request, form, queryset):
             free_rooms=F('total_rooms') - F('reserved_rooms')
         )
         queryset = queryset.filter(free_rooms__gt=0)
+    if min_price and max_price:
+        if min_price > max_price:
+            request.GET['min_price'], request.GET['max_price'] = str(max_price), str(min_price)
+            min_price, max_price = max_price, min_price
     if min_price:
         queryset = queryset.filter(rooms__price__gte=min_price)
     if max_price:
@@ -113,4 +118,9 @@ def processing_get_parameters(request, form, queryset):
         queryset = queryset.filter(options__in=options)
     if capacity:
         queryset = queryset.filter(rooms__capacity__gte=capacity)
+    if sort_key:
+        if sort_key == 'min':
+            queryset = queryset.order_by('min_price')
+        else:
+            queryset = queryset.order_by('-min_price')
     return queryset

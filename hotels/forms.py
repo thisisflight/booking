@@ -53,6 +53,12 @@ RoomFormset = forms.inlineformset_factory(
 
 
 class HotelFilterForm(forms.Form):
+
+    SORT_CHOICES = (
+            ('min', 'min'),
+            ('max', 'max'),
+        )
+
     country = forms.ModelChoiceField(
         label='Направление',
         queryset=Country.objects.all(),
@@ -116,6 +122,12 @@ class HotelFilterForm(forms.Form):
     )
     capacity = forms.ChoiceField(
         choices=((1, 1), (2, 2), (3, 3), (4, 4), (5, 5)),
+    )
+    price_sort_key = forms.ChoiceField(
+        widget=forms.RadioSelect(
+            attrs={'type': 'checkbox', 'class': 'form-check-input'}
+        ),
+        choices=SORT_CHOICES
     )
 
     def __init__(self, *args, **kwargs):

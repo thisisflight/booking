@@ -103,6 +103,25 @@
                     </div>
                 {% endfor %}
             </div>
+            <div class="sidebar-item">
+                <h4>Сортировать по цене</h4>
+                <div>
+                    <label for="id_price_sort_key_0">
+                        <input type="radio" name="price_sort_key"
+                               value="min" class="form-check-input"
+                               form="form" id="id_price_sort_key_0" checked="checked">
+                         начиная c минимальной
+                    </label>
+                </div>
+                <div>
+                    <label for="id_price_sort_key_1">
+                        <input type="radio" name="price_sort_key"
+                               value="max" class="form-check-input"
+                               form="form" id="id_price_sort_key_1">
+                        начиная с максимальной
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
 </div>
