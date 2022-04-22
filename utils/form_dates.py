@@ -21,7 +21,7 @@ def reconfigure_form_dates(request_method, arrival_date: Optional[str], departur
         request_method['arrival_date'] = (datetime.datetime
                                           .strftime(departure_date_ - datetime.timedelta(days=1),
                                                     "%Y-%m-%d"))
-        arrival_date = request_method.GET.get('arrival_date')
+        arrival_date = request_method.get('arrival_date')
     if not departure_date and arrival_date:
         request_method['departure_date'] = (datetime.datetime
                                             .strftime(arrival_date_ + datetime.timedelta(days=1),
